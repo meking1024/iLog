@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dev.Art // Portfolio</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=JetBrains+Mono:wght@400;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['"Space Grotesk"', 'sans-serif'],
+              mono: ['"JetBrains Mono"', 'monospace'],
+              body: ['"Inter"', 'sans-serif'],
+            },
+            colors: {
+              'neo-yellow': '#FFE600',
+              'neo-purple': '#C084FC',
+              'neo-pink': '#FF6B6B',
+              'neo-blue': '#4DE8F4',
+              'neo-black': '#121212',
+              'neo-bg': '#FFFDF5',
+            },
+            boxShadow: {
+              'hard': '4px 4px 0px 0px rgba(18, 18, 18, 1)',
+              'hard-hover': '8px 8px 0px 0px rgba(18, 18, 18, 1)',
+            }
+          }
+        }
+      }
+    </script>
+    <style>
+      /* Custom Scrollbar */
+      ::-webkit-scrollbar {
+        width: 12px;
+      }
+      ::-webkit-scrollbar-track {
+        background: #FFFDF5;
+        border-left: 2px solid #121212;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #121212;
+        border: 2px solid #FFFDF5;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: #FF6B6B;
+      }
+    </style>
+  <script type="importmap">
+{
+  "imports": {
+    "react": "https://aistudiocdn.com/react@^19.2.0",
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/",
+    "react/": "https://aistudiocdn.com/react@^19.2.0/",
+    "framer-motion": "https://aistudiocdn.com/framer-motion@^12.23.24",
+    "lucide-react": "https://aistudiocdn.com/lucide-react@^0.554.0"
+  }
+}
+</script>
+</head>
+  <body class="bg-neo-bg text-neo-black overflow-x-hidden">
+    <div id="root"></div>
+  </body>
+</html>
