@@ -1,68 +1,775 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Dev.Art // Portfolio</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=JetBrains+Mono:wght@400;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
-    <script>
-      tailwind.config = {
-        theme: {
-          extend: {
-            fontFamily: {
-              sans: ['"Space Grotesk"', 'sans-serif'],
-              mono: ['"JetBrains Mono"', 'monospace'],
-              body: ['"Inter"', 'sans-serif'],
-            },
-            colors: {
-              'neo-yellow': '#FFE600',
-              'neo-purple': '#C084FC',
-              'neo-pink': '#FF6B6B',
-              'neo-blue': '#4DE8F4',
-              'neo-black': '#121212',
-              'neo-bg': '#FFFDF5',
-            },
-            boxShadow: {
-              'hard': '4px 4px 0px 0px rgba(18, 18, 18, 1)',
-              'hard-hover': '8px 8px 0px 0px rgba(18, 18, 18, 1)',
-            }
-          }
-        }
-      }
-    </script>
-    <style>
-      /* Custom Scrollbar */
-      ::-webkit-scrollbar {
-        width: 12px;
-      }
-      ::-webkit-scrollbar-track {
-        background: #FFFDF5;
-        border-left: 2px solid #121212;
-      }
-      ::-webkit-scrollbar-thumb {
-        background: #121212;
-        border: 2px solid #FFFDF5;
-      }
-      ::-webkit-scrollbar-thumb:hover {
-        background: #FF6B6B;
-      }
-    </style>
-  <script type="importmap">
-{
-  "imports": {
-    "react": "https://aistudiocdn.com/react@^19.2.0",
-    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/",
-    "react/": "https://aistudiocdn.com/react@^19.2.0/",
-    "framer-motion": "https://aistudiocdn.com/framer-motion@^12.23.24",
-    "lucide-react": "https://aistudiocdn.com/lucide-react@^0.554.0"
-  }
-}
-</script>
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>MACYang · 作品集</title>
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Space+Grotesk:wght@400;600&display=swap" rel="stylesheet">
+
+  <!-- Font Awesome for social icons (fallback for SVG icons) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha512-jQG6k/Zb6J+E6v2fZ7hV0/Z1r9b6sP2cXr2x5p9Q8l2R6z5z6t6Q1j2d3f4g5h6i7j8k9l0m1n2o3p4q5r6s7t==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+  <style>
+    :root{
+      --bg:#0d0f12;
+      --card:#fffdf8;
+      --muted:#98a0a8;
+      --accent1:#ff3cac; /* neon pink */
+      --accent2:#00f5a0; /* neon green */
+      --accent3:#3acaff; /* neon blue */
+      --glass: rgba(255,255,255,0.07);
+      --glass-strong: rgba(255,255,255,0.12);
+      --glass-border: rgba(255,255,255,0.06);
+      --shadow: 0 10px 30px rgba(10,10,10,0.25);
+      color-scheme: dark;
+    }
+
+    /* Reset & base */
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family: 'Inter', system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      background:
+        radial-gradient(1200px 600px at 10% 10%, rgba(58,202,255,0.06), transparent 6%),
+        radial-gradient(800px 500px at 90% 90%, rgba(255,60,172,0.06), transparent 6%),
+        linear-gradient(180deg,#0b0c0f 0%, #0f1114 100%);
+      color:var(--card);
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      line-height:1.45;
+      padding-bottom:80px;
+    }
+
+    /* Fancy blob background canvas */
+    #bg-canvas{
+      position:fixed;
+      inset:0;
+      z-index:0;
+      pointer-events:none;
+      mix-blend-mode:screen;
+      opacity:0.9;
+    }
+
+    /* Layout */
+    .wrap{
+      position:relative;
+      max-width:1200px;
+      margin:40px auto;
+      padding:28px;
+      z-index:2;
+    }
+    header{
+      display:flex;
+      gap:20px;
+      align-items:center;
+      justify-content:space-between;
+      margin-bottom:26px;
+    }
+
+    .brand{
+      display:flex;
+      gap:16px;
+      align-items:center;
+    }
+
+    .logo{
+      width:68px;
+      height:68px;
+      border-radius:14px;
+      display:grid;
+      place-items:center;
+      background:linear-gradient(135deg,var(--accent1),var(--accent3));
+      box-shadow: 0 6px 20px rgba(0,0,0,0.6), 0 0 40px rgba(58,202,255,0.08);
+      transform:rotate(-8deg);
+      transition:transform .45s cubic-bezier(.2,.9,.3,1);
+    }
+    .logo:hover{ transform:rotate(0deg) scale(1.04) }
+
+    .brand h1{
+      margin:0;
+      font-family:'Space Grotesk', 'Inter', sans-serif;
+      font-weight:600;
+      letter-spacing:0.4px;
+      font-size:20px;
+      color:var(--card);
+    }
+    .brand p{
+      margin:0;
+      font-size:12px;
+      color:var(--muted);
+    }
+
+    nav{
+      display:flex;
+      gap:12px;
+      align-items:center;
+    }
+
+    .chip{
+      background:linear-gradient(90deg, rgba(255,255,255,0.03), transparent);
+      border:1px solid var(--glass-border);
+      padding:8px 14px;
+      border-radius:999px;
+      color:var(--card);
+      font-weight:600;
+      font-size:13px;
+      cursor:pointer;
+      backdrop-filter: blur(6px);
+      transition:transform .22s ease, box-shadow .22s;
+    }
+    .chip:hover{ transform:translateY(-3px); box-shadow:var(--shadow) }
+
+    /* Hero */
+    .hero{
+      display:grid;
+      grid-template-columns: 1fr 420px;
+      gap:28px;
+      align-items:stretch;
+      margin-bottom:36px;
+    }
+
+    .intro{
+      padding:28px;
+      border-radius:18px;
+      background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border:1px solid rgba(255,255,255,0.04);
+      box-shadow: 0 12px 40px rgba(0,0,0,0.35);
+      position:relative;
+      overflow:hidden;
+    }
+
+    .intro h2{
+      margin:0 0 8px 0;
+      font-size:28px;
+      color:var(--card);
+      letter-spacing:0.2px;
+    }
+    .intro p.lead{
+      color:var(--muted);
+      margin:0 0 18px 0;
+      font-size:15px;
+    }
+
+    .skills{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      margin-bottom:16px;
+    }
+    .badge{
+      padding:8px 10px;
+      background:linear-gradient(90deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border-radius:12px;
+      border:1px solid rgba(255,255,255,0.04);
+      font-size:13px;
+      color:var(--card);
+    }
+
+    .cta-row{display:flex;gap:12px;align-items:center}
+    .btn{
+      padding:10px 16px;
+      border-radius:12px;
+      font-weight:700;
+      cursor:pointer;
+      border:none;
+      color: #061014;
+      background:linear-gradient(90deg,var(--accent2),var(--accent3));
+      box-shadow: 0 8px 30px rgba(0,0,0,0.28), 0 0 50px rgba(0,245,160,0.06);
+      transition:transform .18s ease;
+    }
+    .btn:active{ transform:translateY(1px) }
+
+    .ghost{
+      background:transparent;
+      color:var(--card);
+      border:1px solid rgba(255,255,255,0.06);
+      padding:10px 14px;
+      border-radius:12px;
+    }
+
+    /* Profile card */
+    .profile{
+      padding:18px;
+      border-radius:18px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border:1px solid rgba(255,255,255,0.04);
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+      align-items:center;
+    }
+
+    .avatar{
+      width:120px;
+      height:120px;
+      border-radius:20px;
+      background:linear-gradient(135deg,var(--accent3),var(--accent1));
+      display:grid;
+      place-items:center;
+      font-weight:800;
+      font-size:36px;
+      color:rgba(6,6,8,0.98);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.45), inset 0 -6px 20px rgba(255,255,255,0.06);
+      transform:translateY(-6px);
+    }
+    .profile h3{margin:6px 0 0 0;font-size:18px}
+    .profile p{margin:0;color:var(--muted);font-size:13px}
+
+    .socials{display:flex;gap:10px}
+    .socials a{
+      width:40px;height:40px;border-radius:10px;display:grid;place-items:center;
+      background:linear-gradient(135deg, rgba(255,255,255,0.02), transparent);
+      border:1px solid rgba(255,255,255,0.04);
+      color:var(--card); text-decoration:none;
+      transition:transform .18s;
+    }
+    .socials a:hover{ transform:translateY(-4px) }
+
+    /* Sections */
+    section{
+      margin-bottom:40px;
+      position:relative;
+    }
+    section h3{
+      margin:0 0 14px 0;
+      font-size:18px;
+      display:flex;
+      align-items:center;
+      gap:12px;
+    }
+
+    /* Gallery */
+    .controls{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      margin-bottom:16px;
+    }
+    .filter{
+      padding:8px 12px;border-radius:999px;border:1px solid rgba(255,255,255,0.04);
+      background:linear-gradient(90deg, rgba(255,255,255,0.015), transparent);
+      font-weight:600;font-size:13px;cursor:pointer;color:var(--card)
+    }
+    .filter.active{ box-shadow:0 8px 24px rgba(58,202,255,0.06); transform:translateY(-4px) }
+
+    .grid{
+      display:grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px,1fr));
+      gap:18px;
+    }
+    .card{
+      border-radius:14px;
+      overflow:hidden;
+      background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border:1px solid rgba(255,255,255,0.04);
+      transition:transform .28s cubic-bezier(.2,.9,.3,1), box-shadow .28s;
+      cursor:pointer;
+      display:flex;
+      flex-direction:column;
+      min-height:260px;
+    }
+    .card:hover{ transform:translateY(-10px); box-shadow:var(--shadow) }
+    .card .cover{
+      height:150px;
+      background-size:cover;
+      background-position:center;
+      position:relative;
+    }
+    .card .meta{
+      padding:12px 14px 16px 14px;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      flex:1;
+    }
+    .tags{display:flex;gap:8px;flex-wrap:wrap}
+    .tag{font-size:12px;padding:6px 8px;border-radius:999px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.03);color:var(--muted)}
+
+    .title{font-weight:700;margin:0;font-size:16px}
+    .desc{margin:0;color:var(--muted);font-size:13px}
+
+    /* Blog list */
+    .blog-list{display:flex;flex-direction:column;gap:12px}
+    .post{
+      display:flex;gap:12px;align-items:center;padding:12px;border-radius:12px;border:1px solid rgba(255,255,255,0.04);
+      background:linear-gradient(90deg, rgba(255,255,255,0.02), transparent);
+    }
+    .post .thumb{width:84px;height:64px;border-radius:10px;background-size:cover;background-position:center}
+    .post .info{flex:1}
+    .post h4{margin:0;font-size:15px}
+    .post p{margin:6px 0 0 0;color:var(--muted);font-size:13px}
+
+    /* Modal lightbox */
+    .modal{
+      position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(2,2,2,0.8);
+      z-index:40;padding:20px;
+    }
+    .modal.open{display:flex}
+    .modal .panel{
+      width:min(1100px,98%);max-height:86vh;overflow:auto;border-radius:16px;padding:18px;background:linear-gradient(180deg,#0b0d10 0%, #0f1114 100%);
+      border:1px solid rgba(255,255,255,0.05);
+    }
+    .modal .panel .row{display:flex;gap:16px;align-items:flex-start}
+    .modal img{max-width:560px;border-radius:12px;box-shadow:var(--shadow)}
+    .modal .m-meta{color:var(--muted);font-size:14px}
+
+    /* Floating icons */
+    .floating-contact{
+      position:fixed;right:18px;bottom:18px;display:flex;flex-direction:column;gap:10px;z-index:50;
+    }
+    .floating-contact a{width:56px;height:56px;border-radius:14px;display:grid;place-items:center;background:linear-gradient(135deg,#ffffff05,#ffffff03);border:1px solid rgba(255,255,255,0.04);text-decoration:none;color:var(--card)}
+    .floating-contact a:hover{transform:translateY(-6px);box-shadow:var(--shadow)}
+
+    /* footer */
+    footer{opacity:0.9;color:var(--muted);font-size:13px;margin-top:40px;text-align:center}
+
+    /* Responsive */
+    @media (max-width:950px){
+      .hero{ grid-template-columns: 1fr; }
+      .profile{ order:-1 }
+      .logo{ width:56px;height:56px }
+    }
+
+    /* small micro-animations */
+    .pulse {
+      animation: pulse 3s infinite;
+    }
+    @keyframes pulse{
+      0%{ transform:scale(1) }
+      50%{ transform:scale(1.02) }
+      100%{ transform:scale(1) }
+    }
+
+    /* accessibility focus */
+    :focus{ outline: 3px solid rgba(0,245,160,0.12); outline-offset:3px; }
+
+  </style>
 </head>
-  <body class="bg-neo-bg text-neo-black overflow-x-hidden">
-    <div id="root"></div>
-  </body>
+<body>
+  <!-- Canvas blob background -->
+  <canvas id="bg-canvas" aria-hidden="true"></canvas>
+
+  <div class="wrap" role="main">
+    <header>
+      <div class="brand">
+        <div class="logo" aria-hidden="true">
+          <!-- small SVG monogram -->
+          <svg width="44" height="44" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <defs>
+              <linearGradient id="g" x1="0" x2="1">
+                <stop offset="0" stop-color="#ff3cac"/>
+                <stop offset="1" stop-color="#3acaff"/>
+              </linearGradient>
+            </defs>
+            <rect x="8" y="8" width="84" height="84" rx="18" fill="url(#g)"/>
+            <path d="M34 68 L34 32 L66 68" stroke="#061014" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </div>
+        <div>
+          <h1>MAC·YLog</h1>
+          <p>视觉 · 游戏 · 摄影 · 交互</p>
+        </div>
+      </div>
+
+      <nav aria-label="主导航">
+        <button class="chip" onclick="scrollToSection('works')">作品</button>
+        <button class="chip" onclick="scrollToSection('blog')">博客</button>
+        <button class="chip" onclick="scrollToSection('contact')">联系</button>
+      </nav>
+    </header>
+
+    <section class="hero" aria-label="介绍">
+      <div class="intro" role="region" aria-labelledby="intro-title">
+        <h2 id="intro-title">你好，我是 <span style="background:linear-gradient(90deg,var(--accent1),var(--accent3));-webkit-background-clip:text;background-clip:text;color:transparent">Mac·Yang</span></h2>
+        <p class="lead">我用代码做游戏，用镜头捕捉世界，用线条与像素讲故事。热衷于大胆配色、精致动效与交互实验。</p>
+
+        <div class="skills" aria-hidden="false">
+          <span class="badge">Python</span>
+          <span class="badge">javascript</span>
+          <span class="badge">Unity</span>
+          <span class="badge">摄影</span>
+          <span class="badge">p5 / Canvas</span>
+        </div>
+
+        <div class="cta-row">
+          <button class="btn" onclick="scrollToSection('works')">查看作品</button>
+          <button class="ghost" onclick="scrollToSection('blog')">阅读博客</button>
+        </div>
+
+        <div style="position:absolute;right:-40px;bottom:-40px;transform:rotate(12deg);opacity:0.6;">
+          <svg width="180" height="180" viewBox="0 0 200 200" fill="none" aria-hidden="true">
+            <defs>
+              <linearGradient id="l1" x1="0" x2="1"><stop offset="0" stop-color="#00f5a0"/><stop offset="1" stop-color="#3acaff"/></linearGradient>
+            </defs>
+            <circle cx="100" cy="100" r="80" fill="url(#l1)"></circle>
+          </svg>
+        </div>
+      </div>
+
+      <aside class="profile" aria-label="个人卡片">
+        <div class="avatar" aria-hidden="true">FW</div>
+        <h3>刘洋</h3>
+        <p>偏好：实验性 python、aiAgent、交互艺术</p>
+
+        <div class="socials" aria-hidden="false">
+          <a href="https://github.com/" target="_blank" rel="noopener" title="GitHub" aria-label="GitHub"><i class="fab fa-github"></i></a>
+          <a href="https://twitter.com/" target="_blank" rel="noopener" title="Twitter" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+          <a href="mailto:hi@example.com" title="Email" aria-label="邮箱"><i class="fa-solid fa-envelope"></i></a>
+        </div>
+
+        <div style="width:100%;display:flex;justify-content:center;">
+          <button class="btn pulse" onclick="scrollToSection('contact')">联系我</button>
+        </div>
+      </aside>
+    </section>
+
+    <!-- 作品展示 -->
+    <section id="works" aria-labelledby="works-title">
+      <h3 id="works-title">作品展示</h3>
+
+      <div class="controls" role="toolbar" aria-label="过滤标签">
+        <button class="filter active" data-filter="all" onclick="filterGrid(event)">全部</button>
+        <button class="filter" data-filter="game" onclick="filterGrid(event)">游戏</button>
+        <button class="filter" data-filter="photo" onclick="filterGrid(event)">摄影</button>
+        <button class="filter" data-filter="art" onclick="filterGrid(event)">画画</button>
+        <button class="filter" data-filter="experimental" onclick="filterGrid(event)">实验性</button>
+      </div>
+
+      <div class="grid" id="gallery" aria-live="polite">
+        <!-- card 1 -->
+        <article class="card" tabindex="0" role="article" data-type="game" data-tags="unity,3d,experimental" onclick="openModal(datasetToObject(this))" onkeydown="cardKey(event)">
+          <div class="cover" style="background-image:url('https://images.unsplash.com/photo-1526318472351-c75fcf070122?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=placeholder');"></div>
+          <div class="meta">
+            <h4 class="title">霓虹迷城（Neon Maze）</h4>
+            <p class="desc">一款以像素与光线为核心的解谜动作游戏，结合程序生成关卡与实时光照。</p>
+            <div class="tags">
+              <span class="tag">unity</span>
+              <span class="tag">3D</span>
+              <span class="tag">experimental</span>
+            </div>
+          </div>
+        </article>
+
+        <!-- card 2 -->
+        <article class="card" tabindex="0" role="article" data-type="photo" data-tags="street,monochrome" onclick="openModal(datasetToObject(this))" onkeydown="cardKey(event)">
+          <div class="cover" style="background-image:url('https://images.unsplash.com/photo-1506765515384-028b60a970df?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=placeholder');"></div>
+          <div class="meta">
+            <h4 class="title">城市印记</h4>
+            <p class="desc">一组街头摄影集，聚焦光影中的孤独与结构。</p>
+            <div class="tags">
+              <span class="tag">street</span>
+              <span class="tag">monochrome</span>
+            </div>
+          </div>
+        </article>
+
+        <!-- card 3 -->
+        <article class="card" tabindex="0" role="article" data-type="art" data-tags="ink,portrait" onclick="openModal(datasetToObject(this))" onkeydown="cardKey(event)">
+          <div class="cover" style="background-image:url('https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=placeholder');"></div>
+          <div class="meta">
+            <h4 class="title">线描·神话</h4>
+            <p class="desc">用墨线与数字混合媒介，尝试将传统神话塑造成当代叙事。</p>
+            <div class="tags">
+              <span class="tag">ink</span>
+              <span class="tag">mixed-media</span>
+            </div>
+          </div>
+        </article>
+
+        <!-- card 4 -->
+        <article class="card" tabindex="0" role="article" data-type="game" data-tags="puzzle,webgl" onclick="openModal(datasetToObject(this))" onkeydown="cardKey(event)">
+          <div class="cover" style="background-image:url('https://images.unsplash.com/photo-1518779578993-ec3579fee39f?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=placeholder');"></div>
+          <div class="meta">
+            <h4 class="title">折叠空间 (Foldspace)</h4>
+            <p class="desc">基于 WebGL 的视角折叠解谜，支持浏览器体验与触控。</p>
+            <div class="tags">
+              <span class="tag">webgl</span>
+              <span class="tag">puzzle</span>
+            </div>
+          </div>
+        </article>
+
+        <!-- card 5 -->
+        <article class="card" tabindex="0" role="article" data-type="photo" data-tags="landscape,color" onclick="openModal(datasetToObject(this))" onkeydown="cardKey(event)">
+          <div class="cover" style="background-image:url('https://images.unsplash.com/photo-1501785888041-af3ef285b470?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=placeholder');"></div>
+          <div class="meta">
+            <h4 class="title">光之边界</h4>
+            <p class="desc">极简自然风景系列，重塑色彩与空间的边界。</p>
+            <div class="tags">
+              <span class="tag">landscape</span>
+              <span class="tag">color</span>
+            </div>
+          </div>
+        </article>
+
+        <!-- more cards can be added similarly -->
+      </div>
+    </section>
+
+    <!-- 博客 -->
+    <section id="blog" aria-labelledby="blog-title">
+      <h3 id="blog-title">博客文章</h3>
+
+      <div class="blog-list" role="list">
+        <article class="post" role="listitem" tabindex="0">
+          <div class="thumb" style="background-image:url('https://images.unsplash.com/photo-1555066931-4365d14bab8c?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=placeholder');"></div>
+          <div class="info">
+            <h4>用着色器讲故事：从碎片到场景</h4>
+            <p>探讨如何用 GLSL 着色器在实时渲染中创造叙事性视觉元素与交互反馈。 <span class="tag" style="margin-left:8px">shader</span></p>
+          </div>
+        </article>
+
+        <article class="post" role="listitem" tabindex="0">
+          <div class="thumb" style="background-image:url('https://images.unsplash.com/photo-1498050108023-c5249f4df085?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=placeholder');"></div>
+          <div class="info">
+            <h4>从摄影到像素：视觉语言的跨界</h4>
+            <p>讨论摄影构图如何影响 UI 布局，以及如何把“瞬间”转化为交互体验。 <span class="tag" style="margin-left:8px">photography</span></p>
+          </div>
+        </article>
+
+        <article class="post" role="listitem" tabindex="0">
+          <div class="thumb" style="background-image:url('https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=placeholder');"></div>
+          <div class="info">
+            <h4>渐变、微交互与可感知反馈</h4>
+            <p>我如何在项目中平衡大胆配色与易用性，以及微交互提升体验的实例。 <span class="tag" style="margin-left:8px">ui</span></p>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- 联系方式 -->
+    <section id="contact" aria-labelledby="contact-title">
+      <h3 id="contact-title">联系方式</h3>
+
+      <div style="display:flex;gap:14px;flex-wrap:wrap;align-items:center;">
+        <div style="min-width:260px;padding:16px;border-radius:12px;border:1px solid rgba(255,255,255,0.04);background:linear-gradient(90deg, rgba(255,255,255,0.015), transparent)">
+          <strong>GitHub</strong>
+          <p style="margin:6px 0 0 0;color:var(--muted)">github.com/yourname</p>
+        </div>
+
+        <div style="min-width:260px;padding:16px;border-radius:12px;border:1px solid rgba(255,255,255,0.04);background:linear-gradient(90deg, rgba(255,255,255,0.015), transparent)">
+          <strong>Twitter</strong>
+          <p style="margin:6px 0 0 0;color:var(--muted)">@yourhandle</p>
+        </div>
+
+        <div style="min-width:260px;padding:16px;border-radius:12px;border:1px solid rgba(255,255,255,0.04);background:linear-gradient(90deg, rgba(255,255,255,0.015), transparent)">
+          <strong>Email</strong>
+          <p style="margin:6px 0 0 0;color:var(--muted)">hi@example.com</p>
+        </div>
+      </div>
+
+    </section>
+
+    <footer>
+      © <span id="yr"></span> 刘洋 — 以代码与视觉打磨体验
+    </footer>
+  </div>
+
+  <!-- Floating quick contact -->
+  <div class="floating-contact" aria-hidden="false">
+    <a href="mailto:hi@example.com" title="发送邮件"><i class="fa-solid fa-envelope"></i></a>
+    <a href="https://github.com/" target="_blank" rel="noopener" title="GitHub"><i class="fab fa-github"></i></a>
+    <a href="https://twitter.com/" target="_blank" rel="noopener" title="Twitter"><i class="fab fa-twitter"></i></a>
+  </div>
+
+  <!-- Modal -->
+  <div id="modal" class="modal" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="modal-title">
+    <div class="panel" role="document">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+        <h3 id="modal-title" style="margin:0">作品详情</h3>
+        <div>
+          <button class="chip" onclick="closeModal()">关闭</button>
+        </div>
+      </div>
+
+      <div id="modal-content" class="row" style="gap:18px"></div>
+    </div>
+  </div>
+
+  <script>
+    // Render year
+    document.getElementById('yr').textContent = new Date().getFullYear();
+
+    // Canvas background: gentle animated blobs
+    (function(){
+      const canvas = document.getElementById('bg-canvas');
+      const ctx = canvas.getContext('2d');
+      let w = canvas.width = innerWidth;
+      let h = canvas.height = innerHeight;
+      const blobs = [
+        {x:w*0.12,y:h*0.15,r:220,dx:0.2,dy:0.1, color1:'rgba(58,202,255,0.12)', color2:'rgba(0,245,160,0.06)'},
+        {x:w*0.85,y:h*0.85,r:260,dx:-0.15,dy:-0.05, color1:'rgba(255,60,172,0.12)', color2:'rgba(58,202,255,0.04)'},
+        {x:w*0.5,y:h*0.45,r:180,dx:0.05,dy:-0.12, color1:'rgba(255,60,172,0.06)', color2:'rgba(0,245,160,0.04)'},
+      ];
+
+      function resize(){
+        w = canvas.width = innerWidth;
+        h = canvas.height = innerHeight;
+      }
+      addEventListener('resize', resize);
+
+      function draw(){
+        ctx.clearRect(0,0,w,h);
+        blobs.forEach((b,i)=>{
+          b.x += b.dx;
+          b.y += b.dy;
+          // bounce
+          if (b.x < -100 || b.x > w+100) b.dx *= -1;
+          if (b.y < -100 || b.y > h+100) b.dy *= -1;
+
+          const g = ctx.createLinearGradient(b.x-b.r, b.y-b.r, b.x+b.r, b.y+b.r);
+          g.addColorStop(0, b.color1);
+          g.addColorStop(1, b.color2);
+
+          ctx.beginPath();
+          ctx.fillStyle = g;
+          ctx.filter = 'blur(40px)';
+          ctx.ellipse(b.x, b.y, b.r, b.r*0.7, Math.sin(Date.now()/2000+i)*0.8, 0, Math.PI*2);
+          ctx.fill();
+          ctx.filter = 'none';
+        });
+        requestAnimationFrame(draw);
+      }
+      draw();
+    })();
+
+    // Simple grid filter
+    function filterGrid(e){
+      const btns = document.querySelectorAll('.filter');
+      btns.forEach(b=>b.classList.remove('active'));
+      const cur = e.currentTarget || e;
+      cur.classList.add('active');
+
+      const f = cur.dataset.filter;
+      const cards = document.querySelectorAll('#gallery .card');
+      if(f === 'all'){
+        cards.forEach(c => c.style.display = '');
+      } else {
+        cards.forEach(c => {
+          const t = c.dataset.type || '';
+          c.style.display = (t === f) ? '' : 'none';
+        });
+      }
+    }
+
+    // keyboard enter/space to open card
+    function cardKey(ev){
+      if(ev.key === 'Enter' || ev.key === ' '){
+        ev.preventDefault();
+        openModal(datasetToObject(ev.currentTarget));
+      }
+    }
+
+    // convert dataset to object for modal
+    function datasetToObject(el){
+      return {
+        title: el.querySelector('.title')?.textContent || '作品',
+        desc: el.querySelector('.desc')?.textContent || '',
+        cover: getComputedStyle(el.querySelector('.cover')).backgroundImage.replace(/(^url\\(|\\)$|")/g, ''),
+        tags: Array.from(el.querySelectorAll('.tag')).map(t=>t.textContent)
+      };
+    }
+
+    // Modal open/close & content
+    const modal = document.getElementById('modal');
+    const modalContent = document.getElementById('modal-content');
+    function openModal(data){
+      // create content
+      modalContent.innerHTML = '';
+      const img = document.createElement('img');
+      img.src = data.cover || '';
+      img.alt = data.title || '作品封面';
+
+      const meta = document.createElement('div');
+      meta.style.flex = '1';
+      meta.innerHTML = `
+        <h3 style="margin-top:0">${escapeHtml(data.title)}</h3>
+        <p class="m-meta">${escapeHtml(data.desc)}</p>
+        <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
+          ${data.tags.map(t=>`<span class="tag">${escapeHtml(t)}</span>`).join('')}
+        </div>
+        <div style="margin-top:20px;display:flex;gap:12px">
+          <button class="btn" onclick="launchDemo()">在线试玩 / 查看</button>
+          <button class="ghost" onclick="downloadAsset()">下载封面</button>
+        </div>
+      `;
+      modalContent.appendChild(img);
+      modalContent.appendChild(meta);
+
+      modal.classList.add('open');
+      modal.setAttribute('aria-hidden','false');
+
+      // trap focus
+      const focusable = modal.querySelectorAll('button, [href], input, textarea, [tabindex]:not([tabindex="-1"])');
+      if(focusable.length) focusable[0].focus();
+    }
+
+    function closeModal(){
+      modal.classList.remove('open');
+      modal.setAttribute('aria-hidden','true');
+    }
+
+    // small helpers
+    function scrollToSection(id){
+      const el = document.getElementById(id);
+      if(!el) return;
+      el.scrollIntoView({behavior:'smooth', block:'start'});
+      // subtle focus for screen readers
+      el.setAttribute('tabindex','-1');
+      el.focus({preventScroll:true});
+    }
+
+    function escapeHtml(s){ return String(s).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;'); }
+
+    // demo actions (placeholders)
+    function launchDemo(){
+      alert('这是示例按钮 — 在真实项目中请将其链接到项目页面或试玩地址。');
+    }
+    function downloadAsset(){
+      alert('下载示例封面（演示）');
+    }
+
+    // close modal on background click or ESC
+    modal.addEventListener('click', (e)=>{
+      if(e.target === modal) closeModal();
+    });
+    addEventListener('keydown', (e)=>{
+      if(e.key === 'Escape') closeModal();
+    });
+
+    // Accessibility: allow filter buttons to be toggled by keyboard
+    document.querySelectorAll('.filter').forEach(btn=>{
+      btn.addEventListener('keydown', (e)=>{
+        if(e.key === 'Enter' || e.key === ' ') { e.preventDefault(); btn.click(); }
+      });
+    });
+
+    // progressive enhancement: lazy load images for covers
+    document.addEventListener('DOMContentLoaded', ()=>{
+      document.querySelectorAll('.cover').forEach(c=>{
+        const bg = getComputedStyle(c).backgroundImage;
+        if(bg && bg.startsWith('url(')){
+          const url = bg.replace(/^url\\(["']?/, '').replace(/["']?\\)$/, '');
+          const img = new Image();
+          img.src = url;
+          img.onload = ()=>{ /* kept for future enhancements */ };
+        }
+      });
+    });
+
+    // Small responsive tweak for tab-focus outline removal on mouse
+    (function(){
+      let usingKeyboard = false;
+      window.addEventListener('keydown', ()=> usingKeyboard = true);
+      window.addEventListener('mousedown', ()=> usingKeyboard = false);
+      document.addEventListener('focusin', (e)=>{
+        if(!usingKeyboard) e.target.style.outline = 'none';
+      });
+    })();
+
+  </script>
+</body>
 </html>
