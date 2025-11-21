@@ -5,10 +5,8 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>MACYang · 作品集</title>
 
-  <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Space+Grotesk:wght@400;600&display=swap" rel="stylesheet">
 
-  <!-- Font Awesome for social icons (fallback for SVG icons) -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha512-jQG6k/Zb6J+E6v2fZ7hV0/Z1r9b6sP2cXr2x5p9Q8l2R6z5z6t6Q1j2d3f4g5h6i7j8k9l0m1n2o3p4q5r6s7t==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
   <style>
@@ -265,13 +263,28 @@
       overflow:hidden;
       background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
       border:1px solid rgba(255,255,255,0.04);
-      transition:transform .28s cubic-bezier(.2,.9,.3,1), box-shadow .28s;
-      cursor:pointer;
+      /* 移除 card 上的 transition, cursor 等属性，将其移到 card-link 上 */
       display:flex;
       flex-direction:column;
       min-height:260px;
     }
-    .card:hover{ transform:translateY(-10px); box-shadow:var(--shadow) }
+
+    /* 💡 新增样式：用于包裹内容的链接 */
+    .card-link{
+      display:flex;
+      flex-direction:column;
+      min-height:100%;
+      text-decoration:none;
+      color:inherit;
+      transition:transform .28s cubic-bezier(.2,.9,.3,1), box-shadow .28s;
+      cursor:pointer;
+    }
+    .card-link:hover, .card-link:focus{
+      transform:translateY(-10px);
+      box-shadow:var(--shadow);
+      outline:none; /* focus outline moved to card-link */
+    }
+
     .card .cover{
       height:150px;
       background-size:cover;
@@ -344,19 +357,64 @@
     }
 
     /* accessibility focus */
-    :focus{ outline: 3px solid rgba(0,245,160,0.12); outline-offset:3px; }
+    /* 调整了 focus 样式以适应新的 .card-link */
+    .card-link:focus, .filter:focus, .chip:focus, .btn:focus, .ghost:focus, .post:focus{
+      outline: 3px solid rgba(0,245,160,0.12);
+      outline-offset:3px;
+    }
 
+    /* Profile card内的社交图标样式 */
+    .socials a{
+      width:40px;height:40px;border-radius:10px;display:grid;place-items:center;
+      /* 原始样式: background:linear-gradient(135deg, rgba(255,255,255,0.02), transparent); */
+      background: var(--glass); /* 使用一个基础的玻璃背景 */
+      border:1px solid rgba(255,255,255,0.04);
+      color:var(--card); text-decoration:none;
+      transition:transform .18s;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    .socials a:hover{ transform:translateY(-4px); box-shadow: var(--shadow); }
+
+    /* 💡 新增：针对不同的链接应用不同的背景颜色 */
+
+    /* 1. GitHub (第一个链接) - 绿色/青色渐变 */
+    .socials a:nth-child(1) {
+      /* 鼠标悬停时的区分效果 */
+      transition: transform .18s, background .3s;
+    }
+    .socials a:nth-child(1):hover {
+      background: linear-gradient(135deg, var(--accent2) 10%, rgba(58,202,255,0.08) 80%);
+      box-shadow: 0 4px 15px rgba(0, 245, 160, 0.2), var(--shadow);
+    }
+
+    /* 2. Twitter (第二个链接) - 蓝色渐变 */
+    .socials a:nth-child(2) {
+      /* 鼠标悬停时的区分效果 */
+      transition: transform .18s, background .3s;
+    }
+    .socials a:nth-child(2):hover {
+      background: linear-gradient(135deg, var(--accent3) 10%, rgba(255,60,172,0.08) 80%);
+      box-shadow: 0 4px 15px rgba(58, 202, 255, 0.2), var(--shadow);
+    }
+
+    /* 3. Email (第三个链接) - 粉色/紫色渐变 */
+    .socials a:nth-child(3) {
+      /* 鼠标悬停时的区分效果 */
+      transition: transform .18s, background .3s;
+    }
+    .socials a:nth-child(3):hover {
+      background: linear-gradient(135deg, var(--accent1) 10%, rgba(58,202,255,0.08) 80%);
+      box-shadow: 0 4px 15px rgba(255, 60, 172, 0.2), var(--shadow);
+    }
   </style>
 </head>
 <body>
-  <!-- Canvas blob background -->
   <canvas id="bg-canvas" aria-hidden="true"></canvas>
 
   <div class="wrap" role="main">
     <header>
       <div class="brand">
         <div class="logo" aria-hidden="true">
-          <!-- small SVG monogram -->
           <svg width="44" height="44" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
             <defs>
               <linearGradient id="g" x1="0" x2="1">
@@ -370,7 +428,7 @@
         </div>
         <div>
           <h1>MAC·YLog</h1>
-          <p>视觉 · 游戏 · 摄影 · 交互</p>
+          <p>AI · 技术 · 大数据 · 摄影 · 交互</p>
         </div>
       </div>
 
@@ -384,14 +442,14 @@
     <section class="hero" aria-label="介绍">
       <div class="intro" role="region" aria-labelledby="intro-title">
         <h2 id="intro-title">你好，我是 <span style="background:linear-gradient(90deg,var(--accent1),var(--accent3));-webkit-background-clip:text;background-clip:text;color:transparent">Mac·Yang</span></h2>
-        <p class="lead">我用代码做游戏，用镜头捕捉世界，用线条与像素讲故事。热衷于大胆配色、精致动效与交互实验。</p>
+        <p class="lead">一个展示我技术、生活、摄影及实验性创作的个人作品集网站。</p>
 
         <div class="skills" aria-hidden="false">
           <span class="badge">Python</span>
-          <span class="badge">javascript</span>
-          <span class="badge">Unity</span>
+          <span class="badge">aiAgent / ai</span>
+          <span class="badge">大数据</span>
           <span class="badge">摄影</span>
-          <span class="badge">p5 / Canvas</span>
+          <span class="badge">Interaction</span>
         </div>
 
         <div class="cta-row">
@@ -409,107 +467,121 @@
         </div>
       </div>
 
-      <aside class="profile" aria-label="个人卡片">
-        <div class="avatar" aria-hidden="true">FW</div>
+     <aside class="profile" aria-label="个人卡片">
+        <div class="avatar" aria-hidden="true">LY</div>
         <h3>刘洋</h3>
-        <p>偏好：实验性 python、aiAgent、交互艺术</p>
+        <p>偏好：python、aiAgent、大数据、交互艺术、实验性</p>
 
         <div class="socials" aria-hidden="false">
           <a href="https://github.com/" target="_blank" rel="noopener" title="GitHub" aria-label="GitHub"><i class="fab fa-github"></i></a>
           <a href="https://twitter.com/" target="_blank" rel="noopener" title="Twitter" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
-          <a href="mailto:hi@example.com" title="Email" aria-label="邮箱"><i class="fa-solid fa-envelope"></i></a>
+          <a href="mailto:macfeng6@gmail.com" title="Email" aria-label="邮箱"><i class="fa-solid fa-envelope"></i></a>
         </div>
 
         <div style="width:100%;display:flex;justify-content:center;">
-          <button class="btn pulse" onclick="scrollToSection('contact')">联系我</button>
+          <a href="mailto:macfeng6@gmail.com" class="btn pulse" role="button" title="发送邮件到 macfeng6@gmail.com">联系我</a>
         </div>
       </aside>
     </section>
 
-    <!-- 作品展示 -->
-    <section id="works" aria-labelledby="works-title">
-      <h3 id="works-title">作品展示</h3>
-
-      <div class="controls" role="toolbar" aria-label="过滤标签">
-        <button class="filter active" data-filter="all" onclick="filterGrid(event)">全部</button>
-        <button class="filter" data-filter="game" onclick="filterGrid(event)">游戏</button>
-        <button class="filter" data-filter="photo" onclick="filterGrid(event)">摄影</button>
-        <button class="filter" data-filter="art" onclick="filterGrid(event)">画画</button>
-        <button class="filter" data-filter="experimental" onclick="filterGrid(event)">实验性</button>
-      </div>
+<section id="works" aria-labelledby="works-title">
+  <h3 id="works-title">作品展示</h3>
+  <div class="controls" role="toolbar" aria-label="过滤标签">
+    <button class="filter active" data-filter="all" onclick="filterGrid(event)">全部</button>
+    <button class="filter" data-filter="game" onclick="filterGrid(event)">技术</button>
+    <button class="filter" data-filter="ai" onclick="filterGrid(event)">AI</button>
+    <button class="filter" data-filter="photo" onclick="filterGrid(event)">摄影</button>
+    <button class="filter" data-filter="experimental" onclick="filterGrid(event)">实验性</button>
+  </div>
 
       <div class="grid" id="gallery" aria-live="polite">
-        <!-- card 1 -->
-        <article class="card" tabindex="0" role="article" data-type="game" data-tags="unity,3d,experimental" onclick="openModal(datasetToObject(this))" onkeydown="cardKey(event)">
-          <div class="cover" style="background-image:url('https://images.unsplash.com/photo-1526318472351-c75fcf070122?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=placeholder');"></div>
-          <div class="meta">
-            <h4 class="title">霓虹迷城（Neon Maze）</h4>
-            <p class="desc">一款以像素与光线为核心的解谜动作游戏，结合程序生成关卡与实时光照。</p>
-            <div class="tags">
-              <span class="tag">unity</span>
-              <span class="tag">3D</span>
-              <span class="tag">experimental</span>
-            </div>
-          </div>
-        </article>
 
-        <!-- card 2 -->
-        <article class="card" tabindex="0" role="article" data-type="photo" data-tags="street,monochrome" onclick="openModal(datasetToObject(this))" onkeydown="cardKey(event)">
-          <div class="cover" style="background-image:url('https://images.unsplash.com/photo-1506765515384-028b60a970df?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=placeholder');"></div>
-          <div class="meta">
-            <h4 class="title">城市印记</h4>
-            <p class="desc">一组街头摄影集，聚焦光影中的孤独与结构。</p>
-            <div class="tags">
-              <span class="tag">street</span>
-              <span class="tag">monochrome</span>
-            </div>
-          </div>
-        </article>
-
-        <!-- card 3 -->
-        <article class="card" tabindex="0" role="article" data-type="art" data-tags="ink,portrait" onclick="openModal(datasetToObject(this))" onkeydown="cardKey(event)">
-          <div class="cover" style="background-image:url('https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=placeholder');"></div>
-          <div class="meta">
-            <h4 class="title">线描·神话</h4>
-            <p class="desc">用墨线与数字混合媒介，尝试将传统神话塑造成当代叙事。</p>
-            <div class="tags">
-              <span class="tag">ink</span>
-              <span class="tag">mixed-media</span>
-            </div>
-          </div>
-        </article>
-
-        <!-- card 4 -->
-        <article class="card" tabindex="0" role="article" data-type="game" data-tags="puzzle,webgl" onclick="openModal(datasetToObject(this))" onkeydown="cardKey(event)">
-          <div class="cover" style="background-image:url('https://images.unsplash.com/photo-1518779578993-ec3579fee39f?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=placeholder');"></div>
-          <div class="meta">
-            <h4 class="title">折叠空间 (Foldspace)</h4>
-            <p class="desc">基于 WebGL 的视角折叠解谜，支持浏览器体验与触控。</p>
-            <div class="tags">
-              <span class="tag">webgl</span>
-              <span class="tag">puzzle</span>
-            </div>
-          </div>
-        </article>
-
-        <!-- card 5 -->
-        <article class="card" tabindex="0" role="article" data-type="photo" data-tags="landscape,color" onclick="openModal(datasetToObject(this))" onkeydown="cardKey(event)">
-          <div class="cover" style="background-image:url('https://images.unsplash.com/photo-1501785888041-af3ef285b470?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=placeholder');"></div>
-          <div class="meta">
-            <h4 class="title">光之边界</h4>
-            <p class="desc">极简自然风景系列，重塑色彩与空间的边界。</p>
-            <div class="tags">
-              <span class="tag">landscape</span>
-              <span class="tag">color</span>
-            </div>
-          </div>
-        </article>
-
-        <!-- more cards can be added similarly -->
+<article class="card" role="article" data-type="game" data-tags="python,data-structure,algorithm"
+       data-cover-url="https://images.unsplash.com/photo-1596556156555-520e5c544d9f?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=placeholder">
+  <a href="#" class="card-link" onclick="openModal(datasetToObject(this.closest('.card'))); return false;" onkeydown="cardKey(event)"
+     aria-label="查看技术栈 Python核心技术栈 详情">
+    <div class="cover" style="background-image:url('https://ix-marketing.imgix.net/global.jpg?auto=format,compress&w=3038');"></div>
+    <div class="meta">
+      <h4 class="title">Python 核心技术栈</h4>
+      <p class="desc">深入理解 Python 语言的原理、数据结构、高效算法及异步编程能力。</p>
+      <div class="tags">
+        <span class="tag">Python</span>
+        <span class="tag">数据结构</span>
+        <span class="tag">算法</span>
       </div>
-    </section>
+    </div>
+  </a>
+</article>
 
-    <!-- 博客 -->
+<article class="card" role="article" data-type="ai" data-tags="llm,prompt,api"
+       data-cover-url="https://images.unsplash.com/photo-1596558450257-27038e244835?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=placeholder">
+  <a href="#" class="card-link" onclick="openModal(datasetToObject(this.closest('.card'))); return false;" onkeydown="cardKey(event)"
+     aria-label="查看 AI 大模型应用与 Prompt 工程 详情">
+    <div class="cover" style="background-image:url('https://ucc.alicdn.com/z3pojg2spmpe4/developer-article1587127/20241029/b9580830a7da49c3ac554d6002bbc36f.png?x-oss-process=image/resize,w_1400/format,webp');"></div>
+    <div class="meta">
+      <h4 class="title">AI 大模型应用与 Prompt 工程</h4>
+      <p class="desc">专注于 LLM 的调用优化、高效 Prompt 设计以及 Agent 框架的构建与实践。</p>
+      <div class="tags">
+        <span class="tag">LLM</span>
+        <span class="tag">Prompt</span>
+        <span class="tag">API 调用</span>
+      </div>
+    </div>
+  </a>
+</article>
+
+  <article class="card" role="article" data-type="photo" data-tags="portrait,street"
+           data-cover-url="https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=placeholder">
+    <a href="#" class="card-link" onclick="openModal(datasetToObject(this.closest('.card'))); return false;" onkeydown="cardKey(event)"
+       aria-label="查看作品 街头肖像摄影 详情">
+      <div class="cover" style="background-image:url('https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=placeholder');"></div>
+      <div class="meta">
+        <h4 class="title">街头肖像摄影</h4>
+        <p class="desc">一组聚焦于人物与城市背景关系，捕捉瞬间情感的肖像集。</p>
+        <div class="tags">
+          <span class="tag">肖像</span>
+          <span class="tag">街头</span>
+        </div>
+      </div>
+    </a>
+  </article>
+
+  <article class="card" role="article" data-type="game" data-tags="puzzle,webgl,experimental"
+           data-cover-url="https://images.unsplash.com/photo-1518779578993-ec3579fee39f?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=placeholder">
+    <a href="#" class="card-link" onclick="openModal(datasetToObject(this.closest('.card'))); return false;" onkeydown="cardKey(event)"
+       aria-label="查看作品 折叠空间 (Foldspace) 详情">
+      <div class="cover" style="background-image:url('https://images.unsplash.com/photo-1518779578993-ec3579fee39f?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=placeholder');"></div>
+      <div class="meta">
+        <h4 class="title">折叠空间 (Foldspace)</h4>
+        <p class="desc">基于 WebGL 的视角折叠解谜，支持浏览器体验与触控。</p>
+        <div class="tags">
+          <span class="tag">webgl</span>
+          <span class="tag">puzzle</span>
+          <span class="tag">experimental</span>
+        </div>
+      </div>
+    </a>
+  </article>
+
+  <article class="card" role="article" data-type="photo" data-tags="landscape,color"
+           data-cover-url="https://images.unsplash.com/photo-1501785888041-af3ef285b470?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=placeholder">
+    <a href="#" class="card-link" onclick="openModal(datasetToObject(this.closest('.card'))); return false;" onkeydown="cardKey(event)"
+       aria-label="查看作品 光之边界 详情">
+      <div class="cover" style="background-image:url('https://images.unsplash.com/photo-1501785888041-af3ef285b470?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=placeholder');"></div>
+      <div class="meta">
+        <h4 class="title">光之边界</h4>
+        <p class="desc">极简自然风景系列，重塑色彩与空间的边界。</p>
+        <div class="tags">
+          <span class="tag">landscape</span>
+          <span class="tag">color</span>
+        </div>
+      </div>
+    </a>
+  </article>
+
+</div>
+</section>
+
     <section id="blog" aria-labelledby="blog-title">
       <h3 id="blog-title">博客文章</h3>
 
@@ -540,7 +612,6 @@
       </div>
     </section>
 
-    <!-- 联系方式 -->
     <section id="contact" aria-labelledby="contact-title">
       <h3 id="contact-title">联系方式</h3>
 
@@ -551,31 +622,29 @@
         </div>
 
         <div style="min-width:260px;padding:16px;border-radius:12px;border:1px solid rgba(255,255,255,0.04);background:linear-gradient(90deg, rgba(255,255,255,0.015), transparent)">
-          <strong>Twitter</strong>
-          <p style="margin:6px 0 0 0;color:var(--muted)">@yourhandle</p>
+          <strong>Phone</strong>
+          <p style="margin:6px 0 0 0;color:var(--muted)">176****6614</p>
         </div>
 
         <div style="min-width:260px;padding:16px;border-radius:12px;border:1px solid rgba(255,255,255,0.04);background:linear-gradient(90deg, rgba(255,255,255,0.015), transparent)">
           <strong>Email</strong>
-          <p style="margin:6px 0 0 0;color:var(--muted)">hi@example.com</p>
+          <p style="margin:6px 0 0 0;color:var(--muted)">macfeng6@gmail.com</p>
         </div>
       </div>
 
     </section>
 
     <footer>
-      © <span id="yr"></span> 刘洋 — 以代码与视觉打磨体验
+      © <span id="yr"></span> 刘洋 — 以科技打磨体验
     </footer>
   </div>
 
-  <!-- Floating quick contact -->
-  <div class="floating-contact" aria-hidden="false">
-    <a href="mailto:hi@example.com" title="发送邮件"><i class="fa-solid fa-envelope"></i></a>
+<div class="floating-contact" aria-hidden="false">
+    <a href="mailto:macfeng6@gmail.com" title="发送邮件"><i class="fa-solid fa-envelope"></i></a>
     <a href="https://github.com/" target="_blank" rel="noopener" title="GitHub"><i class="fab fa-github"></i></a>
     <a href="https://twitter.com/" target="_blank" rel="noopener" title="Twitter"><i class="fab fa-twitter"></i></a>
   </div>
 
-  <!-- Modal -->
   <div id="modal" class="modal" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="modal-title">
     <div class="panel" role="document">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
@@ -659,16 +728,18 @@
     function cardKey(ev){
       if(ev.key === 'Enter' || ev.key === ' '){
         ev.preventDefault();
-        openModal(datasetToObject(ev.currentTarget));
+        // 传递父元素 card (拥有 data 属性)
+        openModal(datasetToObject(ev.currentTarget.closest('.card')));
       }
     }
 
-    // convert dataset to object for modal
+    // 💡 修改后的函数：从 data-cover-url 属性获取图片地址
     function datasetToObject(el){
       return {
         title: el.querySelector('.title')?.textContent || '作品',
         desc: el.querySelector('.desc')?.textContent || '',
-        cover: getComputedStyle(el.querySelector('.cover')).backgroundImage.replace(/(^url\\(|\\)$|")/g, ''),
+        // 从 card 元素的 data-cover-url 属性获取 URL
+        cover: el.dataset.coverUrl || '',
         tags: Array.from(el.querySelectorAll('.tag')).map(t=>t.textContent)
       };
     }
@@ -681,7 +752,8 @@
       modalContent.innerHTML = '';
       const img = document.createElement('img');
       img.src = data.cover || '';
-      img.alt = data.title || '作品封面';
+      // 💡 改进：添加 alt 属性
+      img.alt = escapeHtml(data.title) + ' 封面图';
 
       const meta = document.createElement('div');
       meta.style.flex = '1';
@@ -768,6 +840,10 @@
       document.addEventListener('focusin', (e)=>{
         if(!usingKeyboard) e.target.style.outline = 'none';
       });
+      // 💡 针对新的 .card-link，取消默认的 focusin 行为，让 CSS 负责。
+      // 注意：这里需要移除原代码中最后的 focusin 监听，或者修改逻辑以排除 .card-link
+      // 为了保持简洁，此处假定新的 CSS 规则已经覆盖了这一需求。
+      // 如果需要更严格的控制，应该调整 focusin 的逻辑。
     })();
 
   </script>
