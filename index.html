@@ -1,492 +1,462 @@
 <!doctype html>
-<html lang="zh-CN">
+<html lang="zh-CN" data-theme="dark">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>MACYang · 作品集</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>MACYang · 作品集</title>
 
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Space+Grotesk:wght@400;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Space+Grotesk:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
 
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha512-jQG6k/Zb6J+E6v2fZ7hV0/Z1r9b6sP2cXr2x5p9Q8l2R6z5z6t6Q1j2d3f4g5h6i7j8k9l0m1n2o3p4q5r6s7t==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<style>
+/* -------------------------------------------------
+   🌞🌙 主题变量系统（Light / Dark）
+-------------------------------------------------- */
 
-  <style>
-    :root{
-      --bg:#0d0f12;
-      --card:#fffdf8;
-      --muted:#98a0a8;
-      --accent1:#ff3cac; /* neon pink */
-      --accent2:#00f5a0; /* neon green */
-      --accent3:#3acaff; /* neon blue */
-      --glass: rgba(255,255,255,0.07);
-      --glass-strong: rgba(255,255,255,0.12);
-      --glass-border: rgba(255,255,255,0.06);
-      --shadow: 0 10px 30px rgba(10,10,10,0.25);
-      color-scheme: dark;
-    }
+:root {
+  --transition: 0.35s ease;
+}
 
-    /* Reset & base */
-    *{box-sizing:border-box}
-    html,body{height:100%}
-    body{
-      margin:0;
-      font-family: 'Inter', system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-      background:
-        radial-gradient(1200px 600px at 10% 10%, rgba(58,202,255,0.06), transparent 6%),
-        radial-gradient(800px 500px at 90% 90%, rgba(255,60,172,0.06), transparent 6%),
-        linear-gradient(180deg,#0b0c0f 0%, #0f1114 100%);
-      color:var(--card);
-      -webkit-font-smoothing:antialiased;
-      -moz-osx-font-smoothing:grayscale;
-      line-height:1.45;
-      padding-bottom:80px;
-    }
+/* 夜间主题（默认） */
+html[data-theme="dark"]{
+  --bg:#0d0f12;
+  --card:#ffffff;
+  --muted:#98a0a8;
 
-    /* Fancy blob background canvas */
-    #bg-canvas{
-      position:fixed;
-      inset:0;
-      z-index:0;
-      pointer-events:none;
-      mix-blend-mode:screen;
-      opacity:0.9;
-    }
+  --accent1:#ff3cac;
+  --accent2:#00f5a0;
+  --accent3:#3acaff;
 
-    /* Layout */
-    .wrap{
-      position:relative;
-      max-width:1200px;
-      margin:40px auto;
-      padding:28px;
-      z-index:2;
-    }
-    header{
-      display:flex;
-      gap:20px;
-      align-items:center;
-      justify-content:space-between;
-      margin-bottom:26px;
-    }
+  --glass: rgba(255,255,255,0.08);
+  --glass-strong: rgba(255,255,255,0.16);
+  --glass-border: rgba(255,255,255,0.08);
 
-    .brand{
-      display:flex;
-      gap:16px;
-      align-items:center;
-    }
+  --shadow: 0 10px 30px rgba(0,0,0,0.35);
+}
 
-    .logo{
-      width:68px;
-      height:68px;
-      border-radius:14px;
-      display:grid;
-      place-items:center;
-      background:linear-gradient(135deg,var(--accent1),var(--accent3));
-      box-shadow: 0 6px 20px rgba(0,0,0,0.6), 0 0 40px rgba(58,202,255,0.08);
-      transform:rotate(-8deg);
-      transition:transform .45s cubic-bezier(.2,.9,.3,1);
-    }
-    .logo:hover{ transform:rotate(0deg) scale(1.04) }
+/* 日间主题（Visible difference） */
+html[data-theme="light"]{
+  --bg:#f4f5f7;
+  --card:#1a1a1a;
+  --muted:#666;
 
-    .brand h1{
-      margin:0;
-      font-family:'Space Grotesk', 'Inter', sans-serif;
-      font-weight:600;
-      letter-spacing:0.4px;
-      font-size:20px;
-      color:var(--card);
-    }
-    .brand p{
-      margin:0;
-      font-size:12px;
-      color:var(--muted);
-    }
+  --accent1:#ff4d8a;
+  --accent2:#22d28f;
+  --accent3:#4ba8ff;
 
-    nav{
-      display:flex;
-      gap:12px;
-      align-items:center;
-    }
+  --glass: rgba(0,0,0,0.05);
+  --glass-strong: rgba(0,0,0,0.1);
+  --glass-border: rgba(0,0,0,0.12);
 
-    .chip{
-      background:linear-gradient(90deg, rgba(255,255,255,0.03), transparent);
-      border:1px solid var(--glass-border);
-      padding:8px 14px;
-      border-radius:999px;
-      color:var(--card);
-      font-weight:600;
-      font-size:13px;
-      cursor:pointer;
-      backdrop-filter: blur(6px);
-      transition:transform .22s ease, box-shadow .22s;
-    }
-    .chip:hover{ transform:translateY(-3px); box-shadow:var(--shadow) }
+  --shadow: 0 8px 20px rgba(0,0,0,0.15);
+}
 
-    /* Hero */
-    .hero{
-      display:grid;
-      grid-template-columns: 1fr 420px;
-      gap:28px;
-      align-items:stretch;
-      margin-bottom:36px;
-    }
+/* -------------------------------------------------
+   BODY 背景（使用主题变量，避免固定深色导致无变化）
+-------------------------------------------------- */
+body{
+  margin:0;
+  font-family:'Inter',sans-serif;
+  -webkit-font-smoothing:antialiased;
+  line-height:1.45;
 
-    .intro{
-      padding:28px;
-      border-radius:18px;
-      background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-      border:1px solid rgba(255,255,255,0.04);
-      box-shadow: 0 12px 40px rgba(0,0,0,0.35);
-      position:relative;
-      overflow:hidden;
-    }
+  background:
+    radial-gradient(900px 600px at 10% 10%, rgba(58,202,255,0.08), transparent 35%),
+    radial-gradient(600px 500px at 90% 90%, rgba(255,60,172,0.08), transparent 35%),
+    linear-gradient(180deg, var(--bg) 0%, color-mix(in srgb, var(--bg) 90%, black) 100%);
 
-    .intro h2{
-      margin:0 0 8px 0;
-      font-size:28px;
-      color:var(--card);
-      letter-spacing:0.2px;
-    }
-    .intro p.lead{
-      color:var(--muted);
-      margin:0 0 18px 0;
-      font-size:15px;
-    }
+  color:var(--card);
+  transition:background var(--transition), color var(--transition);
+  padding-bottom:80px;
+}
 
-    .skills{
-      display:flex;
-      gap:8px;
-      flex-wrap:wrap;
-      margin-bottom:16px;
-    }
-    .badge{
-      padding:8px 10px;
-      background:linear-gradient(90deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-      border-radius:12px;
-      border:1px solid rgba(255,255,255,0.04);
-      font-size:13px;
-      color:var(--card);
-    }
+/* 日间主题替换背景 */
+html[data-theme="light"] body{
+  background:
+    radial-gradient(800px 450px at 20% 20%, rgba(0,0,0,0.06), transparent 40%),
+    linear-gradient(180deg, var(--bg) 0%, white 100%);
+}
 
-    .cta-row{display:flex;gap:12px;align-items:center}
-    .btn{
-      padding:10px 16px;
-      border-radius:12px;
-      font-weight:700;
-      cursor:pointer;
-      border:none;
-      color: #061014;
-      background:linear-gradient(90deg,var(--accent2),var(--accent3));
-      box-shadow: 0 8px 30px rgba(0,0,0,0.28), 0 0 50px rgba(0,245,160,0.06);
-      transition:transform .18s ease;
-    }
-    .btn:active{ transform:translateY(1px) }
+/* -------------------------------------------------
+   全局基础
+-------------------------------------------------- */
+*{box-sizing:border-box}
+html,body{height:100%}
 
-    .ghost{
-      background:transparent;
-      color:var(--card);
-      border:1px solid rgba(255,255,255,0.06);
-      padding:10px 14px;
-      border-radius:12px;
-    }
+#bg-canvas{
+  position:fixed; inset:0;
+  pointer-events:none;
+  mix-blend-mode:screen;
+  opacity:0.85;
+  z-index:0;
+}
 
-    /* Profile card */
-    .profile{
-      padding:18px;
-      border-radius:18px;
-      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-      border:1px solid rgba(255,255,255,0.04);
-      display:flex;
-      flex-direction:column;
-      gap:12px;
-      align-items:center;
-    }
+.wrap{
+  position:relative;
+  max-width:1200px;
+  margin:40px auto;
+  padding:28px;
+  z-index:2;
+}
 
-    .avatar{
-      width:120px;
-      height:120px;
-      border-radius:20px;
-      background:linear-gradient(135deg,var(--accent3),var(--accent1));
-      display:grid;
-      place-items:center;
-      font-weight:800;
-      font-size:36px;
-      color:rgba(6,6,8,0.98);
-      box-shadow: 0 10px 30px rgba(0,0,0,0.45), inset 0 -6px 20px rgba(255,255,255,0.06);
-      transform:translateY(-6px);
-    }
-    .profile h3{margin:6px 0 0 0;font-size:18px}
-    .profile p{margin:0;color:var(--muted);font-size:13px}
+/* -------------------------------------------------
+   Header
+-------------------------------------------------- */
+header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:26px;
+}
 
-    .socials{display:flex;gap:10px}
-    .socials a{
-      width:40px;height:40px;border-radius:10px;display:grid;place-items:center;
-      background:linear-gradient(135deg, rgba(255,255,255,0.02), transparent);
-      border:1px solid rgba(255,255,255,0.04);
-      color:var(--card); text-decoration:none;
-      transition:transform .18s;
-    }
-    .socials a:hover{ transform:translateY(-4px) }
+.brand{display:flex;gap:16px;align-items:center;}
 
-    /* Sections */
-    section{
-      margin-bottom:40px;
-      position:relative;
-    }
-    section h3{
-      margin:0 0 14px 0;
-      font-size:18px;
-      display:flex;
-      align-items:center;
-      gap:12px;
-    }
+.logo{
+  width:68px;height:68px;border-radius:14px;
+  display:grid;place-items:center;
+  background:linear-gradient(135deg,var(--accent1),var(--accent3));
+  transform:rotate(-8deg);
+  transition:.45s cubic-bezier(.2,.9,.3,1);
+  box-shadow:var(--shadow);
+}
+.logo:hover{transform:rotate(0deg) scale(1.05);}
 
-    /* Gallery */
-    .controls{
-      display:flex;
-      gap:8px;
-      flex-wrap:wrap;
-      margin-bottom:16px;
-    }
-    .filter{
-      padding:8px 12px;border-radius:999px;border:1px solid rgba(255,255,255,0.04);
-      background:linear-gradient(90deg, rgba(255,255,255,0.015), transparent);
-      font-weight:600;font-size:13px;cursor:pointer;color:var(--card)
-    }
-    .filter.active{ box-shadow:0 8px 24px rgba(58,202,255,0.06); transform:translateY(-4px) }
+.brand h1{margin:0;font-family:'Space Grotesk';color:var(--card);font-size:20px;font-weight:600;}
+.brand p{margin:0;font-size:12px;color:var(--muted);}
 
-    .grid{
-      display:grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px,1fr));
-      gap:18px;
-    }
-    .card{
-      border-radius:14px;
-      overflow:hidden;
-      background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-      border:1px solid rgba(255,255,255,0.04);
-      /* 移除 card 上的 transition, cursor 等属性，将其移到 card-link 上 */
-      display:flex;
-      flex-direction:column;
-      min-height:260px;
-    }
+nav{display:flex;gap:12px;}
 
-    /* 💡 新增样式：用于包裹内容的链接 */
-    .card-link{
-      display:flex;
-      flex-direction:column;
-      min-height:100%;
-      text-decoration:none;
-      color:inherit;
-      transition:transform .28s cubic-bezier(.2,.9,.3,1), box-shadow .28s;
-      cursor:pointer;
-    }
-    .card-link:hover, .card-link:focus{
-      transform:translateY(-10px);
-      box-shadow:var(--shadow);
-      outline:none; /* focus outline moved to card-link */
-    }
+.chip{
+  padding:8px 14px;
+  border-radius:999px;
+  cursor:pointer;
+  font-weight:600;
+  background:linear-gradient(90deg,rgba(255,255,255,0.04),transparent);
+  border:1px solid var(--glass-border);
+  color:var(--card);
+  transition:transform .22s;
+  backdrop-filter:blur(6px);
+}
+.chip:hover{transform:translateY(-3px);box-shadow:var(--shadow);}
 
-    .card .cover{
-      height:150px;
-      background-size:cover;
-      background-position:center;
-      position:relative;
-    }
-    .card .meta{
-      padding:12px 14px 16px 14px;
-      display:flex;
-      flex-direction:column;
-      gap:10px;
-      flex:1;
-    }
-    .tags{display:flex;gap:8px;flex-wrap:wrap}
-    .tag{font-size:12px;padding:6px 8px;border-radius:999px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.03);color:var(--muted)}
+/* -------------------------------------------------
+   Hero
+-------------------------------------------------- */
+.hero{
+  display:grid;
+  grid-template-columns:1fr 420px;
+  gap:28px;
+}
 
-    .title{font-weight:700;margin:0;font-size:16px}
-    .desc{margin:0;color:var(--muted);font-size:13px}
+.intro{
+  padding:28px;border-radius:18px;
+  background:var(--glass);
+  border:1px solid var(--glass-border);
+  box-shadow:var(--shadow);
+}
 
-    /* Blog list */
-    .blog-list{display:flex;flex-direction:column;gap:12px}
-    .post{
-      display:flex;gap:12px;align-items:center;padding:12px;border-radius:12px;border:1px solid rgba(255,255,255,0.04);
-      background:linear-gradient(90deg, rgba(255,255,255,0.02), transparent);
-    }
-    .post .thumb{width:84px;height:64px;border-radius:10px;background-size:cover;background-position:center}
-    .post .info{flex:1}
-    .post h4{margin:0;font-size:15px}
-    .post p{margin:6px 0 0 0;color:var(--muted);font-size:13px}
+.intro h2{margin:0 0 8px;font-size:28px;color:var(--card);}
+.lead{color:var(--muted);margin:0 0 18px;}
 
-    /* Modal lightbox */
-    .modal{
-      position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(2,2,2,0.8);
-      z-index:40;padding:20px;
-    }
-    .modal.open{display:flex}
-    .modal .panel{
-      width:min(1100px,98%);max-height:86vh;overflow:auto;border-radius:16px;padding:18px;background:linear-gradient(180deg,#0b0d10 0%, #0f1114 100%);
-      border:1px solid rgba(255,255,255,0.05);
-    }
-    .modal .panel .row{display:flex;gap:16px;align-items:flex-start}
-    .modal img{max-width:560px;border-radius:12px;box-shadow:var(--shadow)}
-    .modal .m-meta{color:var(--muted);font-size:14px}
+.skills{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;}
+.badge{
+  padding:8px 10px;border-radius:12px;
+  font-size:13px;color:var(--card);
+  background:var(--glass);
+  border:1px solid var(--glass-border);
+}
 
-    /* Floating icons */
-    .floating-contact{
-      position:fixed;right:18px;bottom:18px;display:flex;flex-direction:column;gap:10px;z-index:50;
-    }
-    .floating-contact a{width:56px;height:56px;border-radius:14px;display:grid;place-items:center;background:linear-gradient(135deg,#ffffff05,#ffffff03);border:1px solid rgba(255,255,255,0.04);text-decoration:none;color:var(--card)}
-    .floating-contact a:hover{transform:translateY(-6px);box-shadow:var(--shadow)}
+.btn{
+  padding:10px 16px;border:none;
+  border-radius:12px;
+  background:linear-gradient(90deg,var(--accent2),var(--accent3));
+  color:#061014;font-weight:700;
+  cursor:pointer;
+  box-shadow:var(--shadow);
+}
 
-    /* footer */
-    footer{opacity:0.9;color:var(--muted);font-size:13px;margin-top:40px;text-align:center}
+.ghost{
+  padding:10px 14px;
+  border-radius:12px;
+  background:transparent;
+  border:1px solid var(--glass-border);
+  color:var(--card);
+}
 
-    /* Responsive */
-    @media (max-width:950px){
-      .hero{ grid-template-columns: 1fr; }
-      .profile{ order:-1 }
-      .logo{ width:56px;height:56px }
-    }
+/* Profile */
+.profile{
+  background:var(--glass);
+  border:1px solid var(--glass-border);
+  padding:28px;
+  border-radius:18px;
+  box-shadow:var(--shadow);
+  text-align:center;
+}
 
-    /* small micro-animations */
-    .pulse {
-      animation: pulse 3s infinite;
-    }
-    @keyframes pulse{
-      0%{ transform:scale(1) }
-      50%{ transform:scale(1.02) }
-      100%{ transform:scale(1) }
-    }
+.avatar{
+  width:90px;height:90px;border-radius:18px;
+  display:grid;place-items:center;
+  margin:0 auto 12px;
+  font-size:32px;font-weight:700;
+  background:linear-gradient(135deg,var(--accent1),var(--accent3));
+  color:#fff;
+}
 
-    /* accessibility focus */
-    /* 调整了 focus 样式以适应新的 .card-link */
-    .card-link:focus, .filter:focus, .chip:focus, .btn:focus, .ghost:focus, .post:focus{
-      outline: 3px solid rgba(0,245,160,0.12);
-      outline-offset:3px;
-    }
+.socials a{
+  color:var(--card);font-size:20px;
+  margin:0 8px;
+  transition:0.25s;
+}
+.socials a:hover{color:var(--accent2);}
 
-    /* Profile card内的社交图标样式 */
-    .socials a{
-      width:40px;height:40px;border-radius:10px;display:grid;place-items:center;
-      /* 原始样式: background:linear-gradient(135deg, rgba(255,255,255,0.02), transparent); */
-      background: var(--glass); /* 使用一个基础的玻璃背景 */
-      border:1px solid rgba(255,255,255,0.04);
-      color:var(--card); text-decoration:none;
-      transition:transform .18s;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    }
-    .socials a:hover{ transform:translateY(-4px); box-shadow: var(--shadow); }
+/* -------------------------------------------------
+   作品 / Gallery
+-------------------------------------------------- */
+#works h3,#blog h3,#contact h3{
+  font-size:22px;
+  margin:60px 0 20px;
+  color:var(--card);
+}
 
-    /* 💡 新增：针对不同的链接应用不同的背景颜色 */
+.controls{display:flex;gap:12px;margin-bottom:18px;}
+.filter.active{
+  background:var(--accent2);
+  color:#061014;
+  border-color:transparent;
+}
 
-    /* 1. GitHub (第一个链接) - 绿色/青色渐变 */
-    .socials a:nth-child(1) {
-      /* 鼠标悬停时的区分效果 */
-      transition: transform .18s, background .3s;
-    }
-    .socials a:nth-child(1):hover {
-      background: linear-gradient(135deg, var(--accent2) 10%, rgba(58,202,255,0.08) 80%);
-      box-shadow: 0 4px 15px rgba(0, 245, 160, 0.2), var(--shadow);
-    }
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:22px;}
 
-    /* 2. Twitter (第二个链接) - 蓝色渐变 */
-    .socials a:nth-child(2) {
-      /* 鼠标悬停时的区分效果 */
-      transition: transform .18s, background .3s;
-    }
-    .socials a:nth-child(2):hover {
-      background: linear-gradient(135deg, var(--accent3) 10%, rgba(255,60,172,0.08) 80%);
-      box-shadow: 0 4px 15px rgba(58, 202, 255, 0.2), var(--shadow);
-    }
+.card{
+  background:var(--glass);
+  border:1px solid var(--glass-border);
+  border-radius:18px;
+  box-shadow:var(--shadow);
+  overflow:hidden;
+}
 
-    /* 3. Email (第三个链接) - 粉色/紫色渐变 */
-    .socials a:nth-child(3) {
-      /* 鼠标悬停时的区分效果 */
-      transition: transform .18s, background .3s;
-    }
-    .socials a:nth-child(3):hover {
-      background: linear-gradient(135deg, var(--accent1) 10%, rgba(58,202,255,0.08) 80%);
-      box-shadow: 0 4px 15px rgba(255, 60, 172, 0.2), var(--shadow);
-    }
-  </style>
+.card-link{display:block;color:inherit;text-decoration:none;}
+
+.cover{
+  width:100%;
+  height:180px;
+  background-size:cover;
+  background-position:center;
+}
+
+.meta{padding:16px;}
+.title{margin:0 0 8px;}
+.desc{color:var(--muted);margin:0 0 12px;font-size:14px;}
+.tags .tag{background:var(--glass);padding:4px 8px;border-radius:8px;margin-right:6px;font-size:12px;}
+
+/* -------------------------------------------------
+   Blog
+-------------------------------------------------- */
+.blog-list{display:grid;gap:16px;}
+.post{
+  display:flex;gap:12px;
+  padding:16px;
+  border-radius:14px;
+  background:var(--glass);
+  border:1px solid var(--glass-border);
+}
+.thumb{
+  width:110px;height:80px;border-radius:10px;
+  background-size:cover;background-position:center;
+}
+
+/* -------------------------------------------------
+   Contact
+-------------------------------------------------- */
+#contact div{color:var(--card);}
+
+/* -------------------------------------------------
+   Floating buttons
+-------------------------------------------------- */
+.floating-contact{
+  position:fixed;bottom:30px;right:26px;
+  display:flex;flex-direction:column;gap:12px;
+  z-index:20;
+}
+.floating-contact a{
+  width:46px;height:46px;border-radius:12px;
+  display:grid;place-items:center;
+  background:var(--glass);
+  border:1px solid var(--glass-border);
+  color:var(--card);
+  font-size:20px;
+  transition:0.25s;
+}
+.floating-contact a:hover{transform:translateY(-3px);box-shadow:var(--shadow);}
+
+/* -------------------------------------------------
+   Modal
+-------------------------------------------------- */
+.modal{
+  position:fixed;inset:0;
+  background:rgba(0,0,0,0.55);
+  backdrop-filter:blur(6px);
+  opacity:0;pointer-events:none;
+  transition:0.3s;
+  display:flex;justify-content:center;align-items:center;
+  padding:20px;
+}
+.modal.open{opacity:1;pointer-events:auto;}
+
+.panel{
+  width:95%;max-width:880px;
+  background:var(--glass);
+  border:1px solid var(--glass-border);
+  border-radius:16px;
+  padding:24px;
+  box-shadow:var(--shadow);
+}
+
+.row{display:flex;gap:20px;flex-wrap:wrap;}
+
+.tag{
+  background:var(--glass);
+  padding:6px 10px;
+  border-radius:10px;
+  font-size:12px;
+}
+.socials {
+  margin-bottom: 16px;
+}
+.filter {
+  padding: 8px 16px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+
+  /* 使用主题变量适配两种背景 */
+  background: color-mix(in srgb, var(--bg) 92%, var(--card) 8%);
+  border: 1px solid color-mix(in srgb, var(--bg) 70%, var(--card) 30%);
+  color: var(--card);
+
+  transition:
+    background var(--transition),
+    color var(--transition),
+    box-shadow var(--transition),
+    transform var(--transition);
+}
+
+.filter:hover {
+  /* hover 状态更轻，更柔和 */
+  box-shadow: 0 4px 14px rgba(0,0,0,0.12);
+  transform: translateY(-2px);
+}
+
+/* 选中状态（高亮） */
+.filter.active {
+  background: linear-gradient(90deg, var(--accent2), var(--accent3));
+  border-color: transparent;
+  color: #061014;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.18);
+  transform: translateY(-2px);
+}
+.logo {
+  width: 68px;
+  height: 68px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 26px;         /* 控制 LY 大小 */
+  font-weight: 700;        /* 粗一点更有标志感 */
+  letter-spacing: 1px;     /* 让 L 和 Y 更均衡 */
+  color: #ffffff;
+
+  background: linear-gradient(135deg, var(--accent1), var(--accent3));
+  transform: rotate(-8deg);
+  transition: .45s cubic-bezier(.2,.9,.3,1);
+  box-shadow: var(--shadow);
+}
+
+.logo:hover {
+  transform: rotate(0deg) scale(1.05);
+}
+
+</style>
+
 </head>
 <body>
-  <canvas id="bg-canvas" aria-hidden="true"></canvas>
 
-  <div class="wrap" role="main">
-    <header>
-      <div class="brand">
-        <div class="logo" aria-hidden="true">
-          <svg width="44" height="44" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-            <defs>
-              <linearGradient id="g" x1="0" x2="1">
-                <stop offset="0" stop-color="#ff3cac"/>
-                <stop offset="1" stop-color="#3acaff"/>
-              </linearGradient>
-            </defs>
-            <rect x="8" y="8" width="84" height="84" rx="18" fill="url(#g)"/>
-            <path d="M34 68 L34 32 L66 68" stroke="#061014" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" />
-          </svg>
-        </div>
-        <div>
-          <h1>MAC·YLog</h1>
-          <p>AI · 技术 · 大数据 · 摄影 · 交互</p>
-        </div>
-      </div>
+<canvas id="bg-canvas"></canvas>
 
-      <nav aria-label="主导航">
-        <button class="chip" onclick="scrollToSection('works')">作品</button>
-        <button class="chip" onclick="scrollToSection('blog')">博客</button>
-        <button class="chip" onclick="scrollToSection('contact')">联系</button>
-      </nav>
-    </header>
+<div class="wrap">
+<header>
+  <div class="brand">
+    <div class="logo">LY</div>
+    <div>
+      <h1>MAC·YLog</h1>
+      <p>AI · 技术 · 大数据 · 摄影 · 交互</p>
+    </div>
+  </div>
 
-    <section class="hero" aria-label="介绍">
-      <div class="intro" role="region" aria-labelledby="intro-title">
-        <h2 id="intro-title">你好，我是 <span style="background:linear-gradient(90deg,var(--accent1),var(--accent3));-webkit-background-clip:text;background-clip:text;color:transparent">Mac·Yang</span></h2>
-        <p class="lead">一个展示我技术、生活、摄影及实验性创作的个人作品集网站。</p>
+  <nav>
+    <button class="chip" onclick="scrollToSection('works')">作品</button>
+    <button class="chip" onclick="scrollToSection('blog')">博客</button>
+    <button class="chip" onclick="scrollToSection('contact')">联系</button>
 
-        <div class="skills" aria-hidden="false">
-          <span class="badge">Python</span>
-          <span class="badge">aiAgent / ai</span>
-          <span class="badge">大数据</span>
-          <span class="badge">摄影</span>
-          <span class="badge">Interaction</span>
-        </div>
+    <!-- 🌞🌙 主题切换按钮 -->
+    <button class="chip" id="theme-toggle">🌙</button>
+  </nav>
+</header>
 
-        <div class="cta-row">
-          <button class="btn" onclick="scrollToSection('works')">查看作品</button>
-          <button class="ghost" onclick="scrollToSection('blog')">阅读博客</button>
-        </div>
+<!-- Continue ... (由于篇幅限制，我可以在你回复“继续”后输出剩余 HTML + 全部 JS) -->
+<!-- ===========================
+     HERO 区块
+=========================== -->
+<section class="hero">
+  <div class="intro">
+    <h2>你好，我是
+      <span style="background:linear-gradient(90deg,var(--accent1),var(--accent3));
+      -webkit-background-clip:text;color:transparent;">
+      Mac·Yang
+      </span>
+    </h2>
+    <p class="lead">一个展示我技术、生活、摄影及实验性创作的个人作品集网站。</p>
 
-        <div style="position:absolute;right:-40px;bottom:-40px;transform:rotate(12deg);opacity:0.6;">
-          <svg width="180" height="180" viewBox="0 0 200 200" fill="none" aria-hidden="true">
-            <defs>
-              <linearGradient id="l1" x1="0" x2="1"><stop offset="0" stop-color="#00f5a0"/><stop offset="1" stop-color="#3acaff"/></linearGradient>
-            </defs>
-            <circle cx="100" cy="100" r="80" fill="url(#l1)"></circle>
-          </svg>
-        </div>
-      </div>
+    <div class="skills">
+      <span class="badge">Python</span>
+      <span class="badge">aiAgent / ai</span>
+      <span class="badge">大数据</span>
+      <span class="badge">摄影</span>
+      <span class="badge">Interaction</span>
+    </div>
 
-     <aside class="profile" aria-label="个人卡片">
-        <div class="avatar" aria-hidden="true">LY</div>
-        <h3>刘洋</h3>
-        <p>偏好：python、aiAgent、大数据、交互艺术、实验性</p>
+    <div style="display:flex;gap:12px;">
+      <button class="btn" onclick="scrollToSection('works')">查看作品</button>
+      <button class="ghost" onclick="scrollToSection('blog')">阅读博客</button>
+    </div>
+  </div>
 
-        <div class="socials" aria-hidden="false">
-          <a href="https://github.com/" target="_blank" rel="noopener" title="GitHub" aria-label="GitHub"><i class="fab fa-github"></i></a>
-          <a href="https://twitter.com/" target="_blank" rel="noopener" title="Twitter" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
-          <a href="mailto:macfeng6@gmail.com" title="Email" aria-label="邮箱"><i class="fa-solid fa-envelope"></i></a>
-        </div>
+  <aside class="profile">
+    <div class="avatar">LY</div>
+    <h3>刘洋</h3>
+    <p>偏好：python、aiAgent、大数据、交互艺术、实验性</p>
 
-        <div style="width:100%;display:flex;justify-content:center;">
-          <a href="mailto:macfeng6@gmail.com" class="btn pulse" role="button" title="发送邮件到 macfeng6@gmail.com">联系我</a>
-        </div>
-      </aside>
-    </section>
+    <div class="socials">
+      <a href="https://github.com/" target="_blank"><i class="fab fa-github"></i></a>
+      <a href="https://twitter.com/" target="_blank"><i class="fab fa-twitter"></i></a>
+      <a href="mailto:macfeng6@gmail.com"><i class="fa-solid fa-envelope"></i></a>
+    </div>
 
-<section id="works" aria-labelledby="works-title">
-  <h3 id="works-title">作品展示</h3>
-  <div class="controls" role="toolbar" aria-label="过滤标签">
+    <a href="mailto:macfeng6@gmail.com" class="btn" style="margin-top:12px;">联系我</a>
+  </aside>
+</section>
+
+<!-- ===========================
+     WORKS
+=========================== -->
+<section id="works">
+  <h3>作品展示</h3>
+
+  <div class="controls">
     <button class="filter active" data-filter="all" onclick="filterGrid(event)">全部</button>
     <button class="filter" data-filter="game" onclick="filterGrid(event)">技术</button>
     <button class="filter" data-filter="ai" onclick="filterGrid(event)">AI</button>
@@ -494,360 +464,413 @@
     <button class="filter" data-filter="experimental" onclick="filterGrid(event)">实验性</button>
   </div>
 
-      <div class="grid" id="gallery" aria-live="polite">
+  <div class="grid" id="gallery">
 
-<article class="card" role="article" data-type="game" data-tags="python,data-structure,algorithm"
-       data-cover-url="https://images.unsplash.com/photo-1596556156555-520e5c544d9f?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=placeholder">
-  <a href="#" class="card-link" onclick="openModal(datasetToObject(this.closest('.card'))); return false;" onkeydown="cardKey(event)"
-     aria-label="查看技术栈 Python核心技术栈 详情">
-    <div class="cover" style="background-image:url('https://ix-marketing.imgix.net/global.jpg?auto=format,compress&w=3038');"></div>
-    <div class="meta">
-      <h4 class="title">Python 核心技术栈</h4>
-      <p class="desc">深入理解 Python 语言的原理、数据结构、高效算法及异步编程能力。</p>
-      <div class="tags">
-        <span class="tag">Python</span>
-        <span class="tag">数据结构</span>
-        <span class="tag">算法</span>
-      </div>
-    </div>
-  </a>
-</article>
-
-<article class="card" role="article" data-type="ai" data-tags="llm,prompt,api"
-       data-cover-url="https://images.unsplash.com/photo-1517457210287-29177114d101?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=placeholder">
-  <a href="#" class="card-link" onclick="openModal(datasetToObject(this.closest('.card'))); return false;" onkeydown="cardKey(event)"
-     aria-label="查看 AI 大模型应用与 Prompt 工程 详情">
-    <div class="cover" style="background-image:url('https://ix-marketing.imgix.net/key-features_design.png?auto=format,compress&w=3038');"></div>
-    <div class="meta">
-      <h4 class="title">AI 大模型应用与 Prompt 工程</h4>
-      <p class="desc">专注于 LLM 的调用优化、高效 Prompt 设计以及 Agent 框架的构建与实践。</p>
-      <div class="tags">
-        <span class="tag">LLM</span>
-        <span class="tag">Prompt</span>
-        <span class="tag">API 调用</span>
-      </div>
-    </div>
-  </a>
-</article>
-
-  <article class="card" role="article" data-type="photo" data-tags="portrait,street"
-           data-cover-url="https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=placeholder">
-    <a href="#" class="card-link" onclick="openModal(datasetToObject(this.closest('.card'))); return false;" onkeydown="cardKey(event)"
-       aria-label="查看作品 街头肖像摄影 详情">
-      <div class="cover" style="background-image:url('https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=placeholder');"></div>
-      <div class="meta">
-        <h4 class="title">街头肖像摄影</h4>
-        <p class="desc">一组聚焦于人物与城市背景关系，捕捉瞬间情感的肖像集。</p>
-        <div class="tags">
-          <span class="tag">肖像</span>
-          <span class="tag">街头</span>
+    <article class="card" data-type="game" data-cover-url="https://images.unsplash.com/photo-1596556156555-520e5c544d9f">
+      <a class="card-link" onclick="openModal(datasetToObject(this.closest('.card')))">
+        <div class="cover" style="background-image:url('https://ix-marketing.imgix.net/global.jpg');"></div>
+        <div class="meta">
+          <h4 class="title">Python 核心技术栈</h4>
+          <p class="desc">深入理解 Python 语言的原理、数据结构、高效算法及异步编程能力。</p>
+          <div class="tags">
+            <span class="tag">Python</span><span class="tag">算法</span>
+          </div>
         </div>
-      </div>
-    </a>
-  </article>
+      </a>
+    </article>
 
-  <article class="card" role="article" data-type="game" data-tags="big-data,data-science,dataviz"
-       data-cover-url="https://images.unsplash.com/photo-1551288258-0027f66a6237?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=placeholder">
-  <a href="#" class="card-link" onclick="openModal(datasetToObject(this.closest('.card'))); return false;" onkeydown="cardKey(event)"
-     aria-label="查看作品 大数据与数据科学 详情">
-    <div class="cover" style="background-image:url('https://ix-marketing.imgix.net/q4-24_blog_4%20Ways%20Image%20Optimization%20Reduces%20Costs%20and%20Improves%20ROI.jpg?ixembed=1731960602131&auto=format,compress');"></div>
-    <div class="meta">
-      <h4 class="title">大数据分析与可视化</h4>
-      <p class="desc">利用 Python 栈（Pandas, Matplotlib）处理大规模数据，并构建交互式可视化方案。</p>
-      <div class="tags">
-        <span class="tag">大数据</span>
-        <span class="tag">数据科学</span>
-        <span class="tag">数据可视化</span>
+    <article class="card" data-type="ai" data-cover-url="https://images.unsplash.com/photo-1517457210287-29177114d101">
+      <a class="card-link" onclick="openModal(datasetToObject(this.closest('.card')))">
+        <div class="cover" style="background-image:url('https://ix-marketing.imgix.net/key-features_design.png');"></div>
+        <div class="meta">
+          <h4 class="title">AI 大模型应用与 Prompt 工程</h4>
+          <p class="desc">专注于 LLM 的调用优化、高效 Prompt 设计以及 Agent 框架的构建与实践。</p>
+          <div class="tags"><span class="tag">LLM</span><span class="tag">Prompt</span></div>
+        </div>
+      </a>
+    </article>
+
+    <article class="card" data-type="photo" data-cover-url="https://images.unsplash.com/photo-1494790108377-be9c29b29330">
+      <a class="card-link" onclick="openModal(datasetToObject(this.closest('.card')))">
+        <div class="cover" style="background-image:url('https://images.unsplash.com/photo-1494790108377-be9c29b29330');"></div>
+        <div class="meta">
+          <h4 class="title">街头肖像摄影</h4>
+          <p class="desc">聚焦人物与城市背景关系，捕捉瞬间情感。</p>
+          <div class="tags"><span class="tag">肖像</span><span class="tag">街头</span></div>
+        </div>
+      </a>
+    </article>
+
+    <article class="card" data-type="experimental" data-cover-url="https://images.unsplash.com/photo-1549490349-8643362a9b3d">
+      <a class="card-link" onclick="openModal(datasetToObject(this.closest('.card')))">
+        <div class="cover" style="background-image:url('https://ix-marketing.imgix.net/2024-06_the-power-of-images-in-creative-work_header.jpg');"></div>
+        <div class="meta">
+          <h4 class="title">情感化交互原型设计</h4>
+          <p class="desc">基于心理学的微交互设计，提高愉悦感。</p>
+          <div class="tags"><span class="tag">UX</span><span class="tag">微动效</span></div>
+        </div>
+      </a>
+    </article>
+
+  </div>
+</section>
+
+<!-- ===========================
+     BLOG
+=========================== -->
+<section id="blog">
+  <h3>博客文章</h3>
+
+  <div class="blog-list">
+    <article class="post">
+      <div class="thumb" style="background-image:url('https://images.unsplash.com/photo-1555066931-4365d14bab8c');"></div>
+      <div class="info">
+        <h4>Agent 框架的构建与实践</h4>
+        <p>探讨如何设计与优化自主 AI Agent。<span class="tag">AI Agent</span></p>
       </div>
+    </article>
+
+    <article class="post">
+      <div class="thumb" style="background-image:url('https://images.unsplash.com/photo-1498050108023-c5249f4df085');"></div>
+      <div class="info">
+        <h4>微交互设计：打造更强反馈</h4>
+        <p>分析动效如何增强用户体验。<span class="tag">交互设计</span></p>
+      </div>
+    </article>
+
+    <article class="post">
+      <div class="thumb" style="background-image:url('https://ix-marketing.imgix.net/q3-24_blog_image-enhancement.png?auto=format,compress&w=3038');"></div>
+      <div class="info">
+        <h4>光影与构图：摄影到数字表达</h4>
+        <p>讨论传统摄影语言与界面设计的联系。<span class="tag">摄影</span></p>
+      </div>
+    </article>
+  </div>
+</section>
+
+<!-- ===========================
+     CONTACT
+=========================== -->
+<section id="contact">
+  <h3>联系方式</h3>
+
+  <div style="display:flex;gap:14px;flex-wrap:wrap;">
+    <div style="min-width:260px;padding:16px;border-radius:12px;border:1px solid var(--glass-border);background:var(--glass);">
+      <strong>GitHub</strong>
+      <p>github.com/meking1024</p>
     </div>
-  </a>
-</article>
 
-<article class="card" role="article" data-type="experimental" data-tags="ux,micro-interactions,prototype"
-       data-cover-url="https://images.unsplash.com/photo-1549490349-8643362a9b3d?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=placeholder">
-  <a href="#" class="card-link" onclick="openModal(datasetToObject(this.closest('.card'))); return false;" onkeydown="cardKey(event)"
-     aria-label="查看作品 情感化交互原型设计 详情">
-    <div class="cover" style="background-image:url('https://ix-marketing.imgix.net/2024-06_the-power-of-images-in-creative-work_header.jpg?ixembed=1722965846441&auto=format,compress');"></div>
-    <div class="meta">
-      <h4 class="title">情感化交互原型设计</h4>
-      <p class="desc">基于用户行为心理学，设计微交互动效与反馈，提升产品的愉悦感。</p>
-      <div class="tags">
-        <span class="tag">UX</span>
-        <span class="tag">原型</span>
-        <span class="tag">微动效</span>
-      </div>
+    <div style="min-width:260px;padding:16px;border-radius:12px;border:1px solid var(--glass-border);background:var(--glass);">
+      <strong>Phone</strong>
+      <p>176****6614</p>
     </div>
-  </a>
-</article>
 
+    <div style="min-width:260px;padding:16px;border-radius:12px;border:1px solid var(--glass-border);background:var(--glass);">
+      <strong>Email</strong>
+      <p>macfeng6@gmail.com</p>
+    </div>
+  </div>
+</section>
+
+<footer style="text-align:center;color:var(--muted);margin-top:40px;">
+  © <span id="yr"></span> 刘洋 — 以科技打磨体验
+</footer>
+
+<!-- Floating Buttons -->
+<div class="floating-contact">
+  <a href="mailto:macfeng6@gmail.com"><i class="fa-solid fa-envelope"></i></a>
+  <a href="https://github.com/" target="_blank"><i class="fab fa-github"></i></a>
+  <a href="https://twitter.com/" target="_blank"><i class="fab fa-twitter"></i></a>
 </div>
-</section>
 
-    <section id="blog" aria-labelledby="blog-title">
-  <h3 id="blog-title">博客文章</h3>
-
-  <div class="blog-list" role="list">
-
-    <article class="post" role="listitem" tabindex="0">
-      <div class="thumb" style="background-image:url('https://images.unsplash.com/photo-1555066931-4365d14bab8c?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=placeholder');"></div>
-      <div class="info">
-        <h4>Agent 框架的构建与实践：从 LLM 到自主行动</h4>
-        <p>探讨如何设计、构建和优化基于大语言模型（LLM）的自主 AI Agent 框架。 <span class="tag" style="margin-left:8px">AI Agent</span></p>
-      </div>
-    </article>
-
-    <article class="post" role="listitem" tabindex="0">
-      <div class="thumb" style="background-image:url('https://images.unsplash.com/photo-1498050108023-c5249f4df085?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=placeholder');"></div>
-      <div class="info">
-        <h4>微交互设计：提升用户可感知反馈的关键</h4>
-        <p>分析渐变、动效和触觉反馈如何平衡大胆配色与易用性，增强用户体验。 <span class="tag" style="margin-left:8px">交互设计</span></p>
-      </div>
-    </article>
-
-    <article class="post" role="listitem" tabindex="0">
-      <div class="thumb" style="background-image:url('https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=placeholder');"></div>
-      <div class="info">
-        <h4>光影与构图：从摄影语言到数字视觉表达</h4>
-        <p>讨论经典摄影构图如何应用于数字界面，以及如何把“瞬间”转化为交互叙事。 <span class="tag" style="margin-left:8px">摄影</span></p>
-      </div>
-    </article>
-  </div>
-</section>
-
-    <section id="contact" aria-labelledby="contact-title">
-      <h3 id="contact-title">联系方式</h3>
-
-      <div style="display:flex;gap:14px;flex-wrap:wrap;align-items:center;">
-        <div style="min-width:260px;padding:16px;border-radius:12px;border:1px solid rgba(255,255,255,0.04);background:linear-gradient(90deg, rgba(255,255,255,0.015), transparent)">
-          <strong>GitHub</strong>
-          <p style="margin:6px 0 0 0;color:var(--muted)">github.com/yourname</p>
-        </div>
-
-        <div style="min-width:260px;padding:16px;border-radius:12px;border:1px solid rgba(255,255,255,0.04);background:linear-gradient(90deg, rgba(255,255,255,0.015), transparent)">
-          <strong>Phone</strong>
-          <p style="margin:6px 0 0 0;color:var(--muted)">176****6614</p>
-        </div>
-
-        <div style="min-width:260px;padding:16px;border-radius:12px;border:1px solid rgba(255,255,255,0.04);background:linear-gradient(90deg, rgba(255,255,255,0.015), transparent)">
-          <strong>Email</strong>
-          <p style="margin:6px 0 0 0;color:var(--muted)">macfeng6@gmail.com</p>
-        </div>
-      </div>
-
-    </section>
-
-    <footer>
-      © <span id="yr"></span> 刘洋 — 以科技打磨体验
-    </footer>
-  </div>
-
-<div class="floating-contact" aria-hidden="false">
-    <a href="mailto:macfeng6@gmail.com" title="发送邮件"><i class="fa-solid fa-envelope"></i></a>
-    <a href="https://github.com/" target="_blank" rel="noopener" title="GitHub"><i class="fab fa-github"></i></a>
-    <a href="https://twitter.com/" target="_blank" rel="noopener" title="Twitter"><i class="fab fa-twitter"></i></a>
-  </div>
-
-  <div id="modal" class="modal" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="modal-title">
-    <div class="panel" role="document">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
-        <h3 id="modal-title" style="margin:0">作品详情</h3>
-        <div>
-          <button class="chip" onclick="closeModal()">关闭</button>
-        </div>
-      </div>
-
-      <div id="modal-content" class="row" style="gap:18px"></div>
+<!-- MODAL -->
+<div id="modal" class="modal" aria-hidden="true">
+  <div class="panel">
+    <div style="display:flex;justify-content:space-between;">
+      <h3>作品详情</h3>
+      <button class="chip" onclick="closeModal()">关闭</button>
     </div>
+    <div id="modal-content" class="row"></div>
   </div>
+</div>
+<script>
+/* ========= 渲染当前年份 ========= */
+document.getElementById('yr') && (document.getElementById('yr').textContent = new Date().getFullYear());
 
-  <script>
-    // Render year
-    document.getElementById('yr').textContent = new Date().getFullYear();
+/* ========= 主题切换（系统偏好 + localStorage + 可见背景切换） ========= */
+(function(){
+  const root = document.documentElement;
+  const btn = document.getElementById('theme-toggle');
 
-    // Canvas background: gentle animated blobs
-    (function(){
-      const canvas = document.getElementById('bg-canvas');
-      const ctx = canvas.getContext('2d');
-      let w = canvas.width = innerWidth;
-      let h = canvas.height = innerHeight;
-      const blobs = [
-        {x:w*0.12,y:h*0.15,r:220,dx:0.2,dy:0.1, color1:'rgba(58,202,255,0.12)', color2:'rgba(0,245,160,0.06)'},
-        {x:w*0.85,y:h*0.85,r:260,dx:-0.15,dy:-0.05, color1:'rgba(255,60,172,0.12)', color2:'rgba(58,202,255,0.04)'},
-        {x:w*0.5,y:h*0.45,r:180,dx:0.05,dy:-0.12, color1:'rgba(255,60,172,0.06)', color2:'rgba(0,245,160,0.04)'},
-      ];
-
-      function resize(){
-        w = canvas.width = innerWidth;
-        h = canvas.height = innerHeight;
-      }
-      addEventListener('resize', resize);
-
-      function draw(){
-        ctx.clearRect(0,0,w,h);
-        blobs.forEach((b,i)=>{
-          b.x += b.dx;
-          b.y += b.dy;
-          // bounce
-          if (b.x < -100 || b.x > w+100) b.dx *= -1;
-          if (b.y < -100 || b.y > h+100) b.dy *= -1;
-
-          const g = ctx.createLinearGradient(b.x-b.r, b.y-b.r, b.x+b.r, b.y+b.r);
-          g.addColorStop(0, b.color1);
-          g.addColorStop(1, b.color2);
-
-          ctx.beginPath();
-          ctx.fillStyle = g;
-          ctx.filter = 'blur(40px)';
-          ctx.ellipse(b.x, b.y, b.r, b.r*0.7, Math.sin(Date.now()/2000+i)*0.8, 0, Math.PI*2);
-          ctx.fill();
-          ctx.filter = 'none';
-        });
-        requestAnimationFrame(draw);
-      }
-      draw();
-    })();
-
-    // Simple grid filter
-    function filterGrid(e){
-      const btns = document.querySelectorAll('.filter');
-      btns.forEach(b=>b.classList.remove('active'));
-      const cur = e.currentTarget || e;
-      cur.classList.add('active');
-
-      const f = cur.dataset.filter;
-      const cards = document.querySelectorAll('#gallery .card');
-      if(f === 'all'){
-        cards.forEach(c => c.style.display = '');
-      } else {
-        cards.forEach(c => {
-          const t = c.dataset.type || '';
-          c.style.display = (t === f) ? '' : 'none';
-        });
-      }
+  function applyTheme(theme){
+    root.setAttribute('data-theme', theme);
+    updateIcon(theme);
+  }
+  function updateIcon(theme){
+    if(!btn) return;
+    if(theme === 'light'){
+      btn.textContent = '☀️';
+      btn.setAttribute('aria-pressed','true');
+      btn.title = '当前：日间（点击切换到夜间）';
+    } else {
+      btn.textContent = '🌙';
+      btn.setAttribute('aria-pressed','false');
+      btn.title = '当前：夜间（点击切换到日间）';
     }
+  }
 
-    // keyboard enter/space to open card
-    function cardKey(ev){
-      if(ev.key === 'Enter' || ev.key === ' '){
-        ev.preventDefault();
-        // 传递父元素 card (拥有 data 属性)
-        openModal(datasetToObject(ev.currentTarget.closest('.card')));
-      }
+  // 初始化：优先 localStorage -> 系统偏好 -> dark
+  try {
+    const saved = localStorage.getItem('theme');
+    if(saved === 'light' || saved === 'dark'){
+      applyTheme(saved);
+    } else {
+      const prefersLight = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches;
+      applyTheme(prefersLight ? 'light' : 'dark');
     }
+  } catch (e) {
+    // localStorage 失效时使用默认
+    applyTheme('dark');
+  }
 
-    // 💡 修改后的函数：从 data-cover-url 属性获取图片地址
-    function datasetToObject(el){
-      return {
-        title: el.querySelector('.title')?.textContent || '作品',
-        desc: el.querySelector('.desc')?.textContent || '',
-        // 从 card 元素的 data-cover-url 属性获取 URL
-        cover: el.dataset.coverUrl || '',
-        tags: Array.from(el.querySelectorAll('.tag')).map(t=>t.textContent)
-      };
-    }
-
-    // Modal open/close & content
-    const modal = document.getElementById('modal');
-    const modalContent = document.getElementById('modal-content');
-    function openModal(data){
-      // create content
-      modalContent.innerHTML = '';
-      const img = document.createElement('img');
-      img.src = data.cover || '';
-      // 💡 改进：添加 alt 属性
-      img.alt = escapeHtml(data.title) + ' 封面图';
-
-      const meta = document.createElement('div');
-      meta.style.flex = '1';
-      meta.innerHTML = `
-        <h3 style="margin-top:0">${escapeHtml(data.title)}</h3>
-        <p class="m-meta">${escapeHtml(data.desc)}</p>
-        <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
-          ${data.tags.map(t=>`<span class="tag">${escapeHtml(t)}</span>`).join('')}
-        </div>
-        <div style="margin-top:20px;display:flex;gap:12px">
-          <button class="btn" onclick="launchDemo()">在线试玩 / 查看</button>
-          <button class="ghost" onclick="downloadAsset()">下载封面</button>
-        </div>
-      `;
-      modalContent.appendChild(img);
-      modalContent.appendChild(meta);
-
-      modal.classList.add('open');
-      modal.setAttribute('aria-hidden','false');
-
-      // trap focus
-      const focusable = modal.querySelectorAll('button, [href], input, textarea, [tabindex]:not([tabindex="-1"])');
-      if(focusable.length) focusable[0].focus();
-    }
-
-    function closeModal(){
-      modal.classList.remove('open');
-      modal.setAttribute('aria-hidden','true');
-    }
-
-    // small helpers
-    function scrollToSection(id){
-      const el = document.getElementById(id);
-      if(!el) return;
-      el.scrollIntoView({behavior:'smooth', block:'start'});
-      // subtle focus for screen readers
-      el.setAttribute('tabindex','-1');
-      el.focus({preventScroll:true});
-    }
-
-    function escapeHtml(s){ return String(s).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;'); }
-
-    // demo actions (placeholders)
-    function launchDemo(){
-      alert('这是示例按钮 — 在真实项目中请将其链接到项目页面或试玩地址。');
-    }
-    function downloadAsset(){
-      alert('下载示例封面（演示）');
-    }
-
-    // close modal on background click or ESC
-    modal.addEventListener('click', (e)=>{
-      if(e.target === modal) closeModal();
+  // 点击切换
+  if(btn){
+    btn.addEventListener('click', ()=>{
+      const cur = root.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
+      const next = cur === 'light' ? 'dark' : 'light';
+      applyTheme(next);
+      try { localStorage.setItem('theme', next); } catch(e){}
     });
-    addEventListener('keydown', (e)=>{
-      if(e.key === 'Escape') closeModal();
-    });
+  }
 
-    // Accessibility: allow filter buttons to be toggled by keyboard
-    document.querySelectorAll('.filter').forEach(btn=>{
-      btn.addEventListener('keydown', (e)=>{
-        if(e.key === 'Enter' || e.key === ' ') { e.preventDefault(); btn.click(); }
-      });
-    });
-
-    // progressive enhancement: lazy load images for covers
-    document.addEventListener('DOMContentLoaded', ()=>{
-      document.querySelectorAll('.cover').forEach(c=>{
-        const bg = getComputedStyle(c).backgroundImage;
-        if(bg && bg.startsWith('url(')){
-          const url = bg.replace(/^url\\(["']?/, '').replace(/["']?\\)$/, '');
-          const img = new Image();
-          img.src = url;
-          img.onload = ()=>{ /* kept for future enhancements */ };
+  // 当系统主题发生变化时，如果用户未保存偏好则跟随系统
+  if(window.matchMedia){
+    const mq = window.matchMedia('(prefers-color-scheme: light)');
+    mq.addEventListener && mq.addEventListener('change', (e)=>{
+      try {
+        const savedNow = localStorage.getItem('theme');
+        if(!savedNow){
+          applyTheme(e.matches ? 'light' : 'dark');
         }
-      });
+      } catch(e){}
+    });
+  }
+})();
+
+/* ========= Canvas 背景（轻量 blob 动画） ========= */
+(function(){
+  const canvas = document.getElementById('bg-canvas');
+  if(!canvas) return;
+  const ctx = canvas.getContext('2d');
+  let w = canvas.width = innerWidth;
+  let h = canvas.height = innerHeight;
+
+  const blobs = [
+    {x:w*0.12,y:h*0.15,r:220,dx:0.25,dy:0.12,color1:'rgba(58,202,255,0.12)',color2:'rgba(0,245,160,0.06)'},
+    {x:w*0.85,y:h*0.85,r:260,dx:-0.18,dy:-0.06,color1:'rgba(255,60,172,0.12)',color2:'rgba(58,202,255,0.04)'},
+    {x:w*0.5,y:h*0.45,r:180,dx:0.06,dy:-0.11,color1:'rgba(255,60,172,0.06)',color2:'rgba(0,245,160,0.04)'}
+  ];
+
+  function resize(){
+    w = canvas.width = innerWidth;
+    h = canvas.height = innerHeight;
+  }
+  addEventListener('resize', resize);
+
+  function draw(){
+    ctx.clearRect(0,0,w,h);
+    blobs.forEach((b,i)=>{
+      b.x += b.dx;
+      b.y += b.dy;
+      if(b.x < -200 || b.x > w+200) b.dx *= -1;
+      if(b.y < -200 || b.y > h+200) b.dy *= -1;
+
+      const g = ctx.createLinearGradient(b.x-b.r, b.y-b.r, b.x+b.r, b.y+b.r);
+      g.addColorStop(0, b.color1);
+      g.addColorStop(1, b.color2);
+
+      ctx.beginPath();
+      ctx.fillStyle = g;
+      ctx.filter = 'blur(40px)';
+      ctx.ellipse(b.x, b.y, b.r, b.r*0.7, Math.sin(Date.now()/2000 + i)*0.8, 0, Math.PI*2);
+      ctx.fill();
+      ctx.filter = 'none';
+    });
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+
+/* ========= 作品过滤 ========= */
+function filterGrid(e){
+  const cur = e.currentTarget || e;
+  document.querySelectorAll('.filter').forEach(b=>b.classList.remove('active'));
+  cur.classList.add('active');
+
+  const f = cur.dataset.filter;
+  const cards = document.querySelectorAll('#gallery .card');
+  if(f === 'all'){ cards.forEach(c=>c.style.display=''); }
+  else { cards.forEach(c=> c.style.display = (c.dataset.type === f) ? '' : 'none'); }
+}
+
+/* ========= Modal / Gallery helpers ========= */
+(function(){
+  const modal = document.getElementById('modal');
+  const modalContent = document.getElementById('modal-content');
+  let lastActive = null;
+  let trapEl = null;
+
+  function escapeHtml(s){ return String(s||'').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;'); }
+
+  function extractBgUrl(styleStr){
+    if(!styleStr) return '';
+    return styleStr.replace(/^url\(["']?/, '').replace(/["']?\)$/, '');
+  }
+
+  window.datasetToObject = function(el){
+    if(!el) return {title:'作品', desc:'', cover:'', tags:[]};
+    const title = el.querySelector('.title')?.textContent?.trim() || el.querySelector('h4')?.textContent?.trim() || '作品';
+    const desc = el.querySelector('.desc')?.textContent?.trim() || '';
+    const cover = el.dataset.coverUrl || el.getAttribute('data-cover-url') || extractBgUrl(getComputedStyle(el.querySelector('.cover')||{}).backgroundImage);
+    const tags = Array.from(el.querySelectorAll('.tag')).map(t=>t.textContent.trim());
+    return {title, desc, cover, tags};
+  };
+
+  window.openModal = function(data){
+    if(!modal || !modalContent) return;
+    lastActive = document.activeElement;
+    modalContent.innerHTML = '';
+
+    const img = document.createElement('img');
+    img.src = data.cover || '';
+    img.alt = escapeHtml(data.title) + ' 封面';
+    img.style.maxWidth = '520px';
+    img.style.borderRadius = '12px';
+    img.style.boxShadow = '0 10px 30px rgba(0,0,0,0.4)';
+
+    const meta = document.createElement('div');
+    meta.style.flex = '1';
+    meta.innerHTML = `
+      <h3 style="margin-top:0">${escapeHtml(data.title)}</h3>
+      <p style="color:var(--muted)">${escapeHtml(data.desc)}</p>
+      <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
+        ${data.tags.map(t=>`<span class="tag">${escapeHtml(t)}</span>`).join('')}
+      </div>
+      <div style="margin-top:18px;display:flex;gap:10px">
+        <button class="btn" onclick="launchDemo()">在线试玩 / 查看</button>
+        <button class="chip" onclick="downloadAsset()">下载封面</button>
+      </div>
+    `;
+
+    const row = document.createElement('div');
+    row.className = 'row';
+    row.style.alignItems = 'flex-start';
+    row.appendChild(img);
+    row.appendChild(meta);
+
+    modalContent.appendChild(row);
+
+    modal.classList.add('open');
+    modal.setAttribute('aria-hidden','false');
+
+    // focus 管理 & trap
+    const focusable = modal.querySelectorAll('button, [href], input, textarea, [tabindex]:not([tabindex="-1"])');
+    (focusable[0] && focusable[0].focus()) || modal.focus();
+
+    trapEl = modal;
+    document.addEventListener('focus', enforceFocus, true);
+  };
+
+  window.closeModal = function(){
+    if(!modal) return;
+    modal.classList.remove('open');
+    modal.setAttribute('aria-hidden','true');
+    document.removeEventListener('focus', enforceFocus, true);
+    trapEl = null;
+    if(lastActive && typeof lastActive.focus === 'function') lastActive.focus();
+    lastActive = null;
+  };
+
+  function enforceFocus(e){
+    if(!trapEl) return;
+    if(!trapEl.contains(e.target)){
+      e.stopPropagation();
+      trapEl.querySelector('button, [href], input, textarea, [tabindex]:not([tabindex="-1"])')?.focus();
+    }
+  }
+
+  // close handlers
+  modal && modal.addEventListener('click', (e)=>{ if(e.target === modal) closeModal(); });
+  document.addEventListener('keydown', (e)=>{ if(e.key === 'Escape') closeModal(); });
+
+  // accessibility: make .card-link keyboard openable
+  document.addEventListener('DOMContentLoaded', ()=>{
+    document.querySelectorAll('.card-link').forEach(link=>{
+      link.setAttribute('tabindex','0');
+      link.addEventListener('keydown', (e)=>{ if(e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openModal(datasetToObject(link.closest('.card'))); }});
     });
 
-    // Small responsive tweak for tab-focus outline removal on mouse
-    (function(){
-      let usingKeyboard = false;
-      window.addEventListener('keydown', ()=> usingKeyboard = true);
-      window.addEventListener('mousedown', ()=> usingKeyboard = false);
-      document.addEventListener('focusin', (e)=>{
-        if(!usingKeyboard) e.target.style.outline = 'none';
-      });
-      // 💡 针对新的 .card-link，取消默认的 focusin 行为，让 CSS 负责。
-      // 注意：这里需要移除原代码中最后的 focusin 监听，或者修改逻辑以排除 .card-link
-      // 为了保持简洁，此处假定新的 CSS 规则已经覆盖了这一需求。
-      // 如果需要更严格的控制，应该调整 focusin 的逻辑。
-    })();
+    // filter keyboard
+    document.querySelectorAll('.filter').forEach(btn=>{
+      btn.setAttribute('tabindex','0');
+      btn.addEventListener('keydown', (e)=>{ if(e.key === 'Enter' || e.key === ' ') { e.preventDefault(); btn.click(); }});
+    });
+  });
 
-  </script>
+  // demo placeholders
+  window.launchDemo = function(){ alert('这是示例按钮 — 在真实项目中请将其链接到项目页面或试玩地址。'); };
+  window.downloadAsset = function(){ alert('下载示例封面（演示）'); };
+})();
+
+/* ========= 小工具：scrollToSection, cardKey, escapeHtml ========= */
+function scrollToSection(id){
+  const el = document.getElementById(id);
+  if(!el) return;
+  el.scrollIntoView({behavior:'smooth', block:'start'});
+  el.setAttribute('tabindex','-1');
+  el.focus({preventScroll:true});
+}
+
+function cardKey(ev){
+  if(ev.key === 'Enter' || ev.key === ' '){
+    ev.preventDefault();
+    const card = ev.currentTarget.closest('.card');
+    if(card) openModal(datasetToObject(card));
+  }
+}
+
+/* ========= 图片预加载（progressive） ========= */
+document.addEventListener('DOMContentLoaded', ()=>{
+  document.querySelectorAll('.card').forEach(c=>{
+    const src = c.dataset.coverUrl || c.getAttribute('data-cover-url') || '';
+    if(!src) return;
+    const img = new Image();
+    img.src = src;
+    img.onload = ()=> {
+      const coverEl = c.querySelector('.cover');
+      if(coverEl) coverEl.style.backgroundImage = `url('${src}')`;
+    };
+  });
+});
+
+/* ========= 小 UI：移除鼠标点按时的 focus outline（保留键盘可见性） ========= */
+(function(){
+  let usingKeyboard = false;
+  window.addEventListener('keydown', ()=> usingKeyboard = true);
+  window.addEventListener('mousedown', ()=> usingKeyboard = false);
+  document.addEventListener('focusin', (e)=>{
+    if(!usingKeyboard) e.target.style.outline = 'none';
+  });
+})();
+
+/* ========= 最后：自动将所有 .filter 的 click 事件绑定到 filterGrid（防止 inline 被删除时） ========= */
+document.addEventListener('DOMContentLoaded', ()=>{
+  document.querySelectorAll('.filter').forEach(btn=>{
+    btn.removeEventListener('click', filterGrid); // 无副作用
+    btn.addEventListener('click', filterGrid);
+  });
+});
+</script>
+
 </body>
 </html>
