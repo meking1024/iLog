@@ -380,6 +380,15 @@ nav{display:flex;gap:12px;}
   transform: rotate(0deg) scale(1.05);
 }
 
+/* 修复区块间阴影断层 */
+section {
+  padding-top: 20px;
+  padding-bottom: 20px;
+  background: color-mix(in srgb, var(--bg) 98%, white 2%);
+  border-radius: 16px;
+  margin-bottom: 40px;
+}
+
 </style>
 
 </head>
@@ -446,7 +455,7 @@ nav{display:flex;gap:12px;}
       <a href="mailto:macfeng6@gmail.com"><i class="fa-solid fa-envelope"></i></a>
     </div>
 
-    <a href="mailto:macfeng6@gmail.com" class="btn" style="margin-top:12px;">联系我</a>
+    <a class="btn chip" onclick="scrollToSection('contact')" style="margin-top:12px;">联系我</a>
   </aside>
 </section>
 
