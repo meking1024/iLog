@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="zh-CN" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>文章 · MACYang</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Space+Grotesk:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+<script src="posts/posts-data.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<style>
+:root { --transition: 0.35s ease; }
+html[data-theme="dark"]{
+  --bg:#0d0f12; --card:#ffffff; --muted:#98a0a8;
+  --accent1:#ff3cac; --accent2:#00f5a0; --accent3:#3acaff;
+  --glass: rgba(255,255,255,0.08); --glass-border: rgba(255,255,255,0.08);
+  --shadow: 0 10px 30px rgba(0,0,0,0.35);
+}
+html[data-theme="light"]{
+  --bg:#f4f5f7; --card:#1a1a1a; --muted:#666;
+  --accent1:#ff4d8a; --accent2:#22d28f; --accent3:#4ba8ff;
+  --glass: rgba(0,0,0,0.05); --glass-border: rgba(0,0,0,0.12);
+  --shadow: 0 8px 20px rgba(0,0,0,0.15);
+}
+*{box-sizing:border-box}
+html{min-height:100%;background:var(--bg);}
+body{
+  margin:0; min-height:100%;
+  font-family:'Inter',sans-serif; -webkit-font-smoothing:antialiased;
+  line-height:1.7; color:var(--card);
+  background:
+    radial-gradient(900px 600px at 10% 10%, rgba(58,202,255,0.08), transparent 35%),
+    radial-gradient(600px 500px at 90% 90%, rgba(255,60,172,0.08), transparent 35%),
+    linear-gradient(180deg, var(--bg) 0%, color-mix(in srgb, var(--bg) 90%, black) 100%);
+  padding-bottom:80px;
+}
+html[data-theme="light"] body{
+  background:
+    radial-gradient(800px 450px at 20% 20%, rgba(0,0,0,0.06), transparent 40%),
+    linear-gradient(180deg, var(--bg) 0%, white 100%);
+}
+.wrap{position:relative;max-width:760px;margin:40px auto;padding:28px;z-index:2;}
+.back{
+  display:inline-flex;align-items:center;gap:8px;
+  color:var(--muted);text-decoration:none;font-size:14px;
+  margin-bottom:24px;transition:color var(--transition);
+}
+.back:hover{color:var(--accent2);}
+.article-header{margin-bottom:32px;}
+.article-header h1{
+  margin:0 0 12px;font-family:'Space Grotesk';font-size:32px;line-height:1.25;
+}
+.article-meta{display:flex;flex-wrap:wrap;gap:12px;align-items:center;color:var(--muted);font-size:14px;}
+.cover-img{
+  width:100%;max-height:360px;object-fit:cover;
+  border-radius:16px;margin-bottom:28px;
+  border:1px solid var(--glass-border);box-shadow:var(--shadow);
+}
+.tag{
+  background:var(--glass);padding:4px 10px;border-radius:8px;
+  font-size:12px;border:1px solid var(--glass-border);
+}
+.article-body{
+  background:var(--glass);border:1px solid var(--glass-border);
+  border-radius:18px;padding:32px 36px;box-shadow:var(--shadow);
+}
+.article-body h2{margin:1.6em 0 0.6em;font-size:22px;}
+.article-body h3{margin:1.4em 0 0.5em;font-size:18px;}
+.article-body p{margin:0 0 1em;color:color-mix(in srgb, var(--card) 92%, var(--muted));}
+.article-body ul,.article-body ol{margin:0 0 1em;padding-left:1.4em;}
+.article-body li{margin-bottom:0.4em;}
+.article-body code{
+  background:var(--glass-strong, rgba(255,255,255,0.12));
+  padding:2px 6px;border-radius:6px;font-size:0.9em;
+}
+.article-body pre{
+  background:color-mix(in srgb, var(--bg) 85%, black);
+  padding:16px;border-radius:12px;overflow-x:auto;
+  border:1px solid var(--glass-border);
+}
+.article-body pre code{background:none;padding:0;}
+.article-body blockquote{
+  margin:1em 0;padding:12px 18px;
+  border-left:3px solid var(--accent3);
+  background:var(--glass);border-radius:0 10px 10px 0;
+}
+.article-body table{border-collapse:collapse;width:100%;margin:1em 0;}
+.article-body th,.article-body td{
+  border:1px solid var(--glass-border);padding:8px 12px;text-align:left;
+}
+.article-body a{color:var(--accent3);}
+.loading,.error{text-align:center;padding:60px 20px;color:var(--muted);}
+.error{color:#ff6b6b;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="back" href="index.html#blog"><i class="fa-solid fa-arrow-left"></i> 返回博客列表</a>
+  <div id="article-root">
+    <div class="loading">加载中…</div>
+  </div>
+</div>
+<script>
+const UPLOAD_KEY = 'ilog-uploaded-posts';
+
+(function themeInit(){
+  const root = document.documentElement;
+  try {
+    const saved = localStorage.getItem('theme');
+    if (saved === 'light' || saved === 'dark') root.setAttribute('data-theme', saved);
+    else if (window.matchMedia?.('(prefers-color-scheme: light)').matches) root.setAttribute('data-theme', 'light');
+  } catch(e){}
+})();
+
+function escapeHtml(s){
+  return String(s||'').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;');
+}
+
+function getUploadedPosts(){
+  try { return JSON.parse(localStorage.getItem(UPLOAD_KEY) || '[]'); }
+  catch(e){ return []; }
+}
+
+function formatDate(dateStr){
+  if(!dateStr) return '';
+  const d = new Date(dateStr);
+  if(isNaN(d)) return dateStr;
+  return d.toLocaleDateString('zh-CN', {year:'numeric', month:'long', day:'numeric'});
+}
+
+function renderArticle(post, content){
+  document.title = post.title + ' · MACYang';
+  const root = document.getElementById('article-root');
+  const tagsHtml = (post.tags||[]).map(t => `<span class="tag">${escapeHtml(t)}</span>`).join('');
+  const coverHtml = post.cover
+    ? `<img class="cover-img" src="${escapeHtml(post.cover)}" alt="${escapeHtml(post.title)}">`
+    : '';
+  root.innerHTML = `
+    <header class="article-header">
+      <h1>${escapeHtml(post.title)}</h1>
+      <div class="article-meta">
+        ${post.date ? `<time>${formatDate(post.date)}</time>` : ''}
+        ${tagsHtml}
+      </div>
+    </header>
+    ${coverHtml}
+    <article class="article-body">${marked.parse(content)}</article>
+  `;
+}
+
+function getAllPosts(){
+  const builtin = window.BLOG_POSTS || [];
+  const uploaded = getUploadedPosts();
+  const bySlug = new Map();
+  builtin.forEach(p => bySlug.set(p.slug, p));
+  uploaded.forEach(p => bySlug.set(p.slug, p));
+  return Array.from(bySlug.values());
+}
+
+function loadArticle(){
+  const params = new URLSearchParams(location.search);
+  const slug = params.get('slug');
+  const root = document.getElementById('article-root');
+
+  if(!slug){
+    root.innerHTML = '<div class="error">未指定文章</div>';
+    return;
+  }
+
+  const post = getAllPosts().find(p => p.slug === slug);
+  if(!post){
+    root.innerHTML = '<div class="error">文章不存在</div>';
+    return;
+  }
+
+  if(typeof marked === 'undefined'){
+    root.innerHTML = '<div class="error">Markdown 渲染库加载失败，请检查网络连接</div>';
+    return;
+  }
+
+  renderArticle(post, post.content || '');
+}
+
+loadArticle();
+</script>
+</body>
+</html>
